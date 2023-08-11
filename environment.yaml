@@ -1,0 +1,15 @@
+name: jw4a-d2.1
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - python=3.11
+    - flake8=3.8.3
+    - snakemake-minimal=7.19.1
+    - black
+    - geopandas
+    - cdsapi
+    - pandas
+    - netCDF4
+variables:
+    SNAKEMAKE_PROFILE: ./profiles/default

@@ -1,0 +1,33 @@
+---
+title: JW4A-D2.1
+author:
+    - Jann Launer
+institute: TU Delft
+tags:
+    - reproducible-research
+abstract: |
+    Workflow to run sector-coupled-eurocalliope with new wind regions and techs
+bibliography: literature.yaml
+csl: apa.csl
+link-citations: True
+css:
+    - reset.css
+    - report.css
+lang: en-GB
+figureTemplate: <span>$$figureTitle$$ $$i$$$$titleDelim$$</span> $$t$$
+tableTemplate: <span>$$tableTitle$$ $$i$$$$titleDelim$$</span> $$t$$
+figPrefix:
+    - "Figure"
+    - "Figures"
+tblPrefix:
+    - "Table"
+    - "Tables"
+eqnPrefix:
+    - "Equation"
+    - "Equations"
+secPrefix:
+    - "Section"
+    - "Sections"
+linkReferences: True
+date: 2023-08-11
+---
