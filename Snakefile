@@ -5,6 +5,7 @@ configfile: "config/default.yaml"
 
 include: "./rules/prepare_capacity_factors.smk"
 include: "./rules/prepare_regions.smk"
+include: "./rules/prepare_potentials_offshore.smk"
 
 min_version("7.8")
 

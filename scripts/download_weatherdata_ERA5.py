@@ -7,8 +7,8 @@ import os
 
 
 def download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, client):
-    print("Downloading from ERA5, model level.")
-    print(lon_west, lon_east, lat_north, lat_south, filepath, client)
+    print(f"Downloading from ERA5, model level. Saving to {filepath}")
+    print(f"lon_west={lon_west}, lon_east={lon_east}, lat_north={lat_north}, lat_north={lat_north}")
     client.retrieve(
         "reanalysis-era5-complete",
         {
@@ -133,9 +133,12 @@ if __name__ == "__main__":
     path_coordinates = snakemake.input.path_coordinates
     target_dir = snakemake.output.target_dir
 
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
     coordinates = pd.read_csv(path_coordinates, header=0)
 
-    cdsclient = cdsapi.Client()
+    cdsclient = cdsapi.Client(timeout=600,quiet=False,debug=True)
     for id, (country, location, lon_west, lon_east, lat_north, lat_south) in coordinates.iterrows():
         filepath = os.path.join(target_dir, location + ".nc")
         download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, cdsclient)
