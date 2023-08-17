@@ -11,5 +11,7 @@ dependencies:
     - cdsapi
     - pandas
     - netCDF4
+    - ipykernel
+    - atlite
 variables:
     SNAKEMAKE_PROFILE: ./profiles/default
