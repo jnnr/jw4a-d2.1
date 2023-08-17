@@ -3,9 +3,10 @@ PANDOC = "pandoc --filter pantable --filter pandoc-crossref --citeproc"
 
 configfile: "config/default.yaml"
 
-include: "./rules/prepare_capacity_factors.smk"
-include: "./rules/prepare_regions.smk"
-include: "./rules/prepare_potentials_offshore.smk"
+include: "./rules/boundaries.smk"
+include: "./rules/capacity_factors.smk"
+include: "./rules/model_overrides.smk"
+include: "./rules/potential_areas_offshore.smk"
 
 min_version("7.8")
 
