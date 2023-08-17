@@ -8,7 +8,7 @@ import os
 
 def download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, client):
     print(f"Downloading from ERA5, model level. Saving to {filepath}")
-    print(f"lon_west={lon_west}, lon_east={lon_east}, lat_north={lat_north}, lat_north={lat_north}")
+    print(f"lon_west={lon_west}, lon_east={lon_east}, lat_north={lat_north}, lat_south={lat_south}")
     client.retrieve(
         "reanalysis-era5-complete",
         {
@@ -138,7 +138,11 @@ if __name__ == "__main__":
 
     coordinates = pd.read_csv(path_coordinates, header=0)
 
+    expected_columns = set(["country", "location", "lon_west", "lon_east", "lat_north", "lat_south"])
+    missing_columns = expected_columns.difference(set(coordinates.columns))
+    assert not missing_columns, f"Missing columns {missing_columns}"
+
     cdsclient = cdsapi.Client(timeout=600,quiet=False,debug=True)
-    for id, (country, location, lon_west, lon_east, lat_north, lat_south) in coordinates.iterrows():
-        filepath = os.path.join(target_dir, location + ".nc")
-        download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, cdsclient)
+    for id, data in coordinates.iterrows():
+        filepath = os.path.join(target_dir, data["location"] + ".nc")
+        download_ERA5_ml(data["lon_west"], data["lon_east"], data["lat_north"], data["lat_south"], filepath, cdsclient)

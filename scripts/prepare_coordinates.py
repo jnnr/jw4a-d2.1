@@ -1,5 +1,10 @@
 import geopandas as gpd
 import pandas as pd
+import numpy as np
+
+
+def round_to(x, base=0.25):
+    return np.round(x/base)*base
 
 
 def get_centroids_from_gdf(gdf):
@@ -14,13 +19,11 @@ def get_centroids_from_gdf(gdf):
     coordinates["location"] = gdf["id"]
 
     centroids = gdf["geometry"].centroid
-    # TODO: Round to x decimals
-    # TODO: Define bounding box.
-    # Hidde uses +- .125
-    coordinates["lon_west"] = centroids.x
-    coordinates["lon_east"] = centroids.x
-    coordinates["lat_north"] = centroids.y
-    coordinates["lat_south"] = centroids.y
+
+    coordinates["lon_west"] = round_to(centroids.x)
+    coordinates["lat_north"] = round_to(centroids.y)
+    coordinates["lon_east"] = coordinates["lon_west"] + 0.125
+    coordinates["lat_south"] = coordinates["lat_north"] - 0.125
 
     return coordinates
 
@@ -31,4 +34,4 @@ if __name__ == "__main__":
     file_geoboundaries = open(path_geoboundaries)
     geoboundaries = gpd.read_file(file_geoboundaries)
     centroids = get_centroids_from_gdf(geoboundaries)
-    centroids.to_csv(path_coordinates)
+    centroids.to_csv(path_coordinates, index=False)
