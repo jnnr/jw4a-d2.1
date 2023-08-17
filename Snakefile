@@ -5,6 +5,7 @@ configfile: "config/default.yaml"
 
 include: "./rules/boundaries.smk"
 include: "./rules/capacity_factors.smk"
+include: "./rules/model.smk"
 include: "./rules/model_overrides.smk"
 include: "./rules/potential_areas_offshore.smk"
 
