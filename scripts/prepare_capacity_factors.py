@@ -1,78 +1,87 @@
+from pathlib import Path
+
+import numpy as np
 import pandas as pd
-import netCDF4 as nc
+import xarray as xr
 
 
-def calculate_capacity_factors(windspeeds, powercurve):
+def read_power_curve(filepath_powercurve: Path or str) -> xr.Dataset:
+    r"""
+    Read power curve from csv file.
+    """
+    power_curve = pd.read_csv(filepath_powercurve, index_col="windspeed")
+    power_curve = xr.Dataset.from_dataframe(power_curve)
+
+    return power_curve
+
+
+def join_netcdfs(datasets: list[xr.Dataset]) -> xr.Dataset:
+    r"""
+    Joins a list of xarray datasets into a single dataset.
+    """
+    dataset_joined = xr.concat(datasets, dim="location")
+
+    return dataset_joined
+
+
+def read_windspeed(filepaths_windspeed: list[Path or str]) -> xr.Dataset:
+    r"""
+    Read wind speed data from several netcdf files.
+    """
+    list_windspeed = []
+    for path in filepaths_windspeed:
+        data = xr.open_dataset(path)
+        data = data.assign_coords(location=path.stem)
+        data = (
+            data.reset_index(["latitude", "longitude"])
+            .reset_coords(["latitude", "longitude"])
+            .squeeze()
+        )
+        list_windspeed.append(data)
+
+    windspeed = join_netcdfs(list_windspeed)
+
+    return windspeed
+
+
+def calculate_capacity_factors(
+    windspeed: xr.Dataset, power_curve: xr.Dataset
+) -> xr.Dataset:
     r"""
     Calculate capacity factors from wind speed data and a power curve.
 
     Parameters
     ----------
-    windspeeds : :class:`netCDF4.Dataset`
+    windspeeds : :class:`xarray.Dataset`
         Wind speed data with a datetime index.
-    powercurve : :class:`pandas.DataFrame`
+    powercurve : :class:`xarray.Dataset`
 
     Returns
     -------
-    capacity_factors : :class:`pandas.DataFrame`
+    capacity_factors : :class:`xarray.Dataset`
         Capacity factors with a datetime index.
     """
-    datetimeindex=pd.date_range("2013-01-01", periods= 52584, freq="H")
+    data = windspeed.copy()
 
-    df_list = []
-    windspeed_avg_location={}
+    # calculate absolute wind speed
+    data = data.assign(windspeed=lambda x: np.sqrt(x.u**2 + x.v**2))  # pythagoras
 
-    for loc, cou, fil in zip(location, country, filename):
-        data = nc.Dataset(output_directory + fil)
+    # round to 1 decimal to be able to merge with power curve
+    data = data.assign(windspeed=lambda x: np.round(x.windspeed, decimals=1))
 
-        u = data.variables['u'][:, :, :]
-        v = data.variables['v'][:, :, :]
+    # apply power curve
+    capacity_factors = power_curve["capfac"].sel(
+        windspeed=data.windspeed, method="nearest"
+    )
 
-        # pythagoras
-        u=u**2
-        v=v**2
-        windspeed=np.sqrt(u+v)
-
-        # TODO: Ask Hidde about this.
-        windspeed=windspeed.reshape(52584,4)
-        windspeed=pd.DataFrame(windspeed)
-        windspeed['windspeed']=windspeed.mean(axis=1)
-        windspeed=windspeed['windspeed']
-        windspeed=pd.DataFrame(windspeed)
-
-        # round to 1 decimal to be able to merge with power curve
-        windspeed=np.round(windspeed,decimals=1)
-    
-        # TODO: Have a look at this variable to see what is the use of this. 
-        windspeedavg=windspeed.mean(axis=0)
-        windspeed_avg_location[loc] = windspeedavg['windspeed']
-    
-        windspeed['location']=loc
-        windspeed['country']=cou
-        windspeed['time']=datetimeindex
-        df_list.append(windspeed)
-        df = pd.concat(df_list, ignore_index=False)
-
-    # TODO: What happens here?
-    capfactable=df.merge(power_curve, how='left', on='windspeed')
-    capfactable=capfactable.drop(['windspeed','power'], axis=1)
-    capfactable=capfactable.groupby(["country","time"])["capfac"].mean()
-    capfactable=pd.DataFrame(capfactable)
-    capfactable=capfactable.unstack(level=0)
-    capfactable.columns=capfactable.columns.droplevel()
-
-    # TODO: Generalize or drop this.
-    #rename column to match North Sea Calliope 
-    capfactable=capfactable.rename(columns={"Denmark":"DNK","France":"FRA","Ireland":"IRL","Norway":"NOR","Sweden":"SWE","UK":"GBR"}) #floating only
-    capfactable=capfactable.rename(columns={"Netherlands":"NLD","Germany":"DEU","Belgium":"BEL","Luxembourg":"LUX"}) #fixed offshore
-
-    return capfactable
+    return capacity_factors
 
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
         import sys
         from pathlib import Path
+
         sys.path.append(str(Path(__file__).parent.parent))
         from lib.helpers import mock_snakemake
 
@@ -82,11 +91,15 @@ if __name__ == "__main__":
     filepath_powercurve = snakemake.input.powercurve
     filepath_capacity_factors = snakemake.output.capacity_factors
 
-    powercurve = pd.read_csv(filepath_powercurve)
+    power_curve = read_power_curve(filepath_powercurve)
+    windspeed = read_windspeed(filepaths_windspeed)
 
-    for fp_windspeed in filepaths_windspeed:
-        windspeed = nc.Dataset(fp_windspeed)
+    capacity_factors = calculate_capacity_factors(windspeed, power_curve)
 
-        capacity_factors =  pd.DataFrame() #calculate_capacity_factors(windspeed, powercurve)
+    df_capacity_factors = (
+        capacity_factors.to_dataframe()
+        .reset_index()
+        .pivot(index="time", columns="location", values="capfac")
+    )
 
-        capacity_factors.to_csv(filepath_capacity_factors)
+    df_capacity_factors.to_csv(filepath_capacity_factors)
