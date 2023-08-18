@@ -7,8 +7,8 @@ rule download_ERA5_weather_data:
 
 rule prepare_capacity_factors:
     input: 
-        windspeeds="build/weather_data",
-        powercurve="data/powercurve.csv"
+        windspeed="build/weather_data",
+        powercurve="data/power_curves/AWE_500kw_softwing.csv"
     output: 
-        capacity_factors="build/capacity_factors"
+        capacity_factors="build/capacity_factors/AWE_500kw_softwing.csv"
     script: "../scripts/prepare_capacity_factors.py"

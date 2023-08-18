@@ -23,7 +23,7 @@ def calculate_capacity_factors(windspeeds, powercurve):
     windspeed_avg_location={}
 
     for loc, cou, fil in zip(location, country, filename):
-        data= nc.Dataset(output_directory + fil)
+        data = nc.Dataset(output_directory + fil)
 
         u = data.variables['u'][:, :, :]
         v = data.variables['v'][:, :, :]
@@ -70,16 +70,23 @@ def calculate_capacity_factors(windspeeds, powercurve):
 
 
 if __name__ == "__main__":
-    filepath_windspeeds = snakemake.inputs.windspeeds
-    filepath_powercurve = snakemake.outputs.powercurve
-    filepath_capacityfactors = snakemake.outputs.capacityfactors
+    if "snakemake" not in globals():
+        import sys
+        from pathlib import Path
+        sys.path.append(str(Path(__file__).parent.parent))
+        from lib.helpers import mock_snakemake
 
-    windspeeds = nc.Dataset(filepath_windspeeds)
+        snakemake = mock_snakemake("prepare_capacity_factors")
+
+    filepaths_windspeed = Path(snakemake.input.windspeed).glob("*.nc")
+    filepath_powercurve = snakemake.input.powercurve
+    filepath_capacity_factors = snakemake.output.capacity_factors
+
     powercurve = pd.read_csv(filepath_powercurve)
-    capacity_factors = calculate_capacity_factors(windspeeds, powercurve)
 
-    capacity_factors.to_csv(filepath_capacityfactors)
+    for fp_windspeed in filepaths_windspeed:
+        windspeed = nc.Dataset(fp_windspeed)
 
+        capacity_factors =  pd.DataFrame() #calculate_capacity_factors(windspeed, powercurve)
 
-
-    
+        capacity_factors.to_csv(filepath_capacity_factors)
