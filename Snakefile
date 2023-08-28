@@ -7,7 +7,7 @@ include: "./rules/boundaries.smk"
 include: "./rules/capacity_factors.smk"
 include: "./rules/model.smk"
 include: "./rules/model_overrides.smk"
-include: "./rules/potential_areas_offshore.smk"
+include: "./rules/download_data.smk"
 
 min_version("7.8")
 
