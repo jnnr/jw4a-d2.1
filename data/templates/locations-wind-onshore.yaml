@@ -1,4 +1,0 @@
-locations:
-    {% for id, potential in potentials.iterrows() %}
-    {{ id }}.techs.awe_onshore_sw1.constraints.energy_cap_max: {{ potential.energy_cap_max }} # (100,000 MW)
-    {% endfor %}
