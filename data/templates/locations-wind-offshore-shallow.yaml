@@ -1,0 +1,9 @@
+overrides:
+    wind_offshore_shallow_cap_max:
+        group_constraints:
+            {% for id, potential in potentials.iterrows() %}
+            wind_offshore_shallow_cap_max_{{ id }}:
+                techs: [wind_offshore, awe_shallow_fw1]
+                locs: [{{ id }}]
+                energy_cap_max: {{potential.energy_cap_max}}  # (100,000 MW)
+            {% endfor %}

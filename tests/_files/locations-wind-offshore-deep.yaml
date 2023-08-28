@@ -1,7 +1,11 @@
 overrides:
     wind_offshore_deep_cap_max:
         group_constraints:
-            wind_offshore_deep_cap_max_BEL:
+            wind_offshore_deep_cap_max_DE:
                 techs: [wind_floating, awe_deep_fw1]
-                locs: [DNK]
-                energy_cap_max: 0.11  # (100,000 MW)
+                locs: [DE]
+                energy_cap_max: 4  # (100,000 MW)
+            wind_offshore_deep_cap_max_DK:
+                techs: [wind_floating, awe_deep_fw1]
+                locs: [DK]
+                energy_cap_max: 6  # (100,000 MW)

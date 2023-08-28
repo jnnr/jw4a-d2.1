@@ -1,0 +1,62 @@
+# adds these to the list of technologies
+# - wind_floating
+# - awe_onshore_sw
+# - awe_shallow_fw1
+# - awe_deep_fw1
+techs:
+    wind_floating:
+        essentials:
+            name: Floating wind
+            parent: wind
+        constraints:
+            resource: file=capacityfactors-wind_floating.csv
+            resource_unit: energy_per_cap
+            lifetime: 30 # [@JRC:2014] Table 5
+        costs:
+            monetary:
+                energy_cap: 294.50 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+                om_annual: 4.29 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+                om_prod: 0.00024 # (10,000 EUR2013/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+    awe_onshore_sw: 
+        essentials:
+            name: AWE onshore sw
+            parent: supply
+            carrier: electricity
+        constraints: 
+            resource: file=capacityfactors-awe_onshore_sw.csv 
+            resource_unit: energy_per_cap
+            lifetime: 30
+            resource_area_per_energy_cap: 5
+        costs:
+            monetary:
+                energy_cap: 60.87 #BVG_2050
+                om_annual: 2.22
+                om_prod: 0.000122
+    awe_shallow_fw1: 
+        essentials:
+            name: AWE shallow fw1
+            parent: supply
+            carrier: electricity
+        constraints: 
+            resource: file=capacityfactors-awe_shallow_fw1.csv
+            resource_unit: energy_per_cap
+            lifetime: 30
+        costs:
+            monetary:
+                energy_cap: 153.35 #ampyx
+                om_annual: 4.79
+                om_prod: 0.00024
+    awe_deep_fw1: 
+        essentials:
+            name: AWE deep fw1
+            parent: supply
+            carrier: electricity
+        constraints: 
+            resource: file=capacityfactors-awe_deep_fw1.csv
+            resource_unit: energy_per_cap
+            lifetime: 30
+        costs:
+            monetary:
+                energy_cap: 169.66 #ampyx
+                om_annual: 5.42
+                om_prod: 0.00024

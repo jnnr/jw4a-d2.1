@@ -38,13 +38,21 @@ def test_parametrise_templates():
         "locations-wind-offshore-deep.yaml",
         "locations-wind-offshore-shallow.yaml",
     ]
-    
 
-    for template in templates:
+    files_potentials = [
+        "potentials-wind-onshore.csv",
+        "potentials-wind-offshore-deep.csv",
+        "potentials-wind-offshore-shallow.csv",
+    ]
+    
+    for template, file_potentials in zip(templates, files_potentials):
+
+        potentials = pd.read_csv(EXPECTED_DIR / file_potentials, index_col=0)
+
         parametrise_template(
             TEMPLATE_DIR / template,
             TEMP_DIR / template,
-            locations=pd.DataFrame({"lon_west": ["2", "3"], "lat_north": ["3", '5']}, index=["DE", "DK"])
+            potentials=potentials,
         )
 
         produced = TEMP_DIR / template
