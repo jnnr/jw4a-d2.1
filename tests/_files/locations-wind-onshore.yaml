@@ -1,0 +1,6 @@
+locations:
+    ALB_1: # Albania
+        techs:
+            awe_onshore_sw1:
+                constraints:
+                    energy_cap_max: 0.6879766264903546 # (100,000 MW)

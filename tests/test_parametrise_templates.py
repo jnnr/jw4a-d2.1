@@ -1,0 +1,55 @@
+from pathlib import Path
+import shutil
+import pytest 
+import sys
+from deepdiff import DeepDiff
+import yaml
+sys.path.append(str(Path(__file__).parent.parent))
+from lib.template import parametrise_template
+import pandas as pd
+
+EXPECTED_DIR = Path(__file__).parent / "_files"
+TEMP_DIR = Path(__file__).parent / "temp"
+TEMPLATE_DIR = Path(__file__).parent.parent / "data" / "templates"
+
+
+def compare_yaml_files(path_file1, path_file2):
+    with open(path_file1, 'r') as file1, open(path_file2, 'r') as file2:
+        content1 = yaml.safe_load(file1)
+        content2 = yaml.safe_load(file2)
+
+        diff = DeepDiff(content1, content2, ignore_order=True)
+
+        return diff
+
+
+@pytest.fixture(autouse=True)
+def prepare_temp_dir():
+    """Clean up TEMP_DIR"""
+    if TEMP_DIR.exists():
+        shutil.rmtree(TEMP_DIR)
+
+    TEMP_DIR.mkdir()
+
+
+def test_parametrise_templates():
+    templates = [
+        "locations-wind-onshore.yaml",
+        "locations-wind-offshore-deep.yaml",
+        "locations-wind-offshore-shallow.yaml",
+    ]
+    
+
+    for template in templates:
+        parametrise_template(
+            TEMPLATE_DIR / template,
+            TEMP_DIR / template,
+            locations=pd.DataFrame({"lon_west": ["2", "3"], "lat_north": ["3", '5']}, index=["DE", "DK"])
+        )
+
+        produced = TEMP_DIR / template
+        expected = EXPECTED_DIR / template
+
+        diff = compare_yaml_files(produced, expected)
+
+        assert not diff

@@ -4,6 +4,9 @@ data/
 # generated files
 build/
 
+## Test temp files
+tests/temp/
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

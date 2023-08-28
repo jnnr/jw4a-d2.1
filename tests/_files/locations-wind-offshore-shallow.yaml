@@ -9,9 +9,3 @@ overrides:
                 techs: [wind_offshore, awe_shallow_fw1]
                 locs: [DE]
                 energy_cap_max: 0.11  # (100,000 MW)
-    wind_offshore_deep_cap_max:
-        group_constraints:
-            wind_offshore_deep_cap_max_BEL:
-                techs: [wind_floating, awe_shallow_fw1]
-                locs: [DNK]
-                energy_cap_max: 0.11  # (100,000 MW)
