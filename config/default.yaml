@@ -2,3 +2,48 @@
 slope: 4
 x0: 5
 
+data-sources:
+    eez: "https://geo.vliz.be/geoserver/MarineRegions/wfs?service=WFS&version=1.0.0&request=GetFeature&typeNames=MarineRegions:eez&outputFormat=SHAPE-ZIP"
+
+scope:
+    spatial:
+        countries:
+            - "Austria"
+            - "Belgium"
+            - "Bulgaria"
+            - "Croatia"
+            - "Cyprus"
+            - "Czech Republic"
+            - "Denmark"
+            - "Estonia"
+            - "Finland"
+            - "France"
+            - "Germany"
+            - "Greece"
+            - "Hungary"
+            - "Ireland"
+            - "Italy"
+            - "Latvia"
+            - "Lithuania"
+            - "Luxembourg"
+            - "Netherlands"
+            - "Poland"
+            - "Portugal"
+            - "Romania"
+            - "Slovakia"
+            - "Slovenia"
+            - "Spain"
+            - "Sweden"
+            - "United Kingdom"
+            - "Albania"
+            - "Bosnia and Herzegovina"
+            - "Macedonia, Republic of"
+            - "Montenegro"
+            - "Norway"
+            - "Serbia"
+            - "Switzerland"
+        bounds:
+            x_min: -15.8
+            x_max: 37
+            y_min: 30
+            y_max: 75

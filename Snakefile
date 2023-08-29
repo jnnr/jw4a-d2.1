@@ -5,9 +5,10 @@ configfile: "config/default.yaml"
 
 include: "./rules/boundaries.smk"
 include: "./rules/capacity_factors.smk"
+include: "./rules/download_data.smk"
 include: "./rules/model.smk"
 include: "./rules/model_overrides.smk"
-include: "./rules/download_data.smk"
+include: "./rules/potentials_offshore.smk"
 
 min_version("7.8")
 

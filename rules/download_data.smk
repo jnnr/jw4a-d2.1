@@ -1,7 +1,6 @@
 from lib.download import download, unzip
 rule download_geodata_offshore:
     params:
-        # eez="",
         water_depth="https://www.bodc.ac.uk/data/open_download/gebco/gebco_2023_sub_ice_topo/zip/",
         shipping_density_global="https://datacatalogfiles.worldbank.org/ddh-published/0037580/DR0045406/shipdensity_global.zip",
         natura2000_areas="https://sdi.eea.europa.eu/datashare/s/7WkpGo6K2jwFHGp/download"
@@ -21,3 +20,11 @@ rule unzip_geodata_offshore:
         for zipped, unzipped in zip(*{input}, *{output}):
             print(f"Unzipping {zipped} to {unzipped}")
             unzip(str(zipped), str(unzipped))
+
+rule download_eez:
+    # copied from euro-calliope
+    message: "Download Exclusive Economic Zones as zip"
+    output: protected("data/shapes/eez.zip")
+    params: url = config["data-sources"]["eez"]
+    # conda: "../envs/shell.yaml"
+    shell: "curl -sLo {output} '{params.url}'"
