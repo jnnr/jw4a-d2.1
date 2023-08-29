@@ -5,7 +5,7 @@ from pathlib import Path
 
 import jinja2
 
-import filters
+from . import filters
 
 
 def parametrise_template(path_to_template, path_to_output_yaml, **kwargs):
