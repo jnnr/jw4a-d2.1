@@ -28,3 +28,8 @@ rule download_eez:
     params: url = config["data-sources"]["eez"]
     # conda: "../envs/shell.yaml"
     shell: "curl -sLo {output} '{params.url}'"
+
+rule download_ERA5_cutout:
+    output: 
+        target_dir="build/cutouts/cutout-era5-model-level.nc"
+    script: "../scripts/download_weatherdata_ERA5.py"
