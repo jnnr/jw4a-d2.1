@@ -22,7 +22,7 @@ def _rename_and_clean_coords(ds, add_lon_lat=True):
 
 
 if __name__ == "__main__":
-    modellevel = xr.open_dataset(snakemake.input)
+    modellevel = xr.open_dataset(str(snakemake.input))
 
     modellevel.attrs["module"] = "era5"
     modellevel.attrs["dx"] = 0.25
@@ -38,5 +38,5 @@ if __name__ == "__main__":
         units=modellevel["u"].attrs["units"], long_name="Wind speed"
     )
 
-    modellevel.to_netcdf(snakemake.output)
+    modellevel.to_netcdf(str(snakemake.output))
     modellevel.close()
