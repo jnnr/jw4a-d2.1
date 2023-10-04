@@ -17,10 +17,12 @@ rule build_availabilitymatrix:
         area_shallow = "build/availability/area_offshore_shallow.csv"
     script: "../scripts/build_availabilitymatrix.py"
 
+def get_inputs(wildcards):
+    inputs = config["prepare_capacity_factors"][wildcards.tech]
+    return inputs
+
 rule prepare_capacity_factors:
     input: 
-        windspeed="build/weather_data",
-        powercurve="data/power_curves/AWE_500kw_softwing.csv"
-    output: 
-        capacity_factors="build/capacity_factors/AWE_500kw_softwing.csv"
+        unpack(get_inputs)
+    output: "build/capacity_factors/capacity_factors_{tech}.nc"
     script: "../scripts/prepare_capacity_factors.py"
