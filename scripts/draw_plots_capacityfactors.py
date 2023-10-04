@@ -89,20 +89,20 @@ def format_tuple(tupl):
 
 
 if __name__ ==  "__main__":
-    path_capacity_factors = "build/capacity_factors/capacity_factors_offshore_deep_awe.nc"
-    path_boundaries = "build/shapes/eez.geojson"
-    path_plot = "build/plots/load_duration_wind_offshore_deep_awe.png"
-    path_plot_average = "build/plots/capacity_factor_average_offshore_deep_awe.png"
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
 
-    capacity_factors = xr.load_dataset(path_capacity_factors)
-    boundaries = gpd.read_file(path_boundaries)
+        snakemake = mock_snakemake("draw_plots_capacityfactors")
+
+    capacity_factors = xr.load_dataset(snakemake.input.path_capacity_factors)
+    boundaries = gpd.read_file(snakemake.input.path_boundaries)
 
     # prepare labels to properly name the regions
     labels = boundaries[["iso_sov1", "iso_sov2"]].apply(format_tuple, axis=1)
 
     # plot annual average
     fig, ax = plot_annual_average(capacity_factors, labels)
-    plt.savefig(path_plot_average, dpi=300, transparent=False)
+    plt.savefig(snakemake.output.path_plot_average, dpi=300, transparent=False)
 
     # split index in year and month-day-hour
     df_capacity_factors = capacity_factors.to_dataframe()["__xarray_dataarray_variable__"].unstack("dim_0")
@@ -138,4 +138,4 @@ if __name__ ==  "__main__":
         + pn.theme_minimal()
         + pn.labs(x="Sorted hours", y="Capacity factor", title="Load duration curves")
         + pn.theme(axis_text_x=pn.element_text(rotation=60, hjust=1))
-    ).save(path_plot, dpi=300, height=5, width=10, facecolor="w", transparent=False)
+    ).save(snakemake.output.path_plot, dpi=300, height=5, width=10, facecolor="w", transparent=False)
