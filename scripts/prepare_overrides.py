@@ -32,6 +32,22 @@ import pandas as pd
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from lib.template import parametrise_template
+import xarray as xr
+
+
+def prepare_capacity_factors(capfac, destination, name):
+    if not destination.exists():
+        destination.mkdir(parents=True)
+
+    # chunk the data into years and save it as csv
+    years = list(set(capfac.time.dt.year.values))
+    for year in years:
+        capfac_year = capfac.sel(time=str(year))
+        df_capfac_year = capfac_year.to_dataframe()["__xarray_dataarray_variable__"].unstack("dim_0")
+        df_capfac_year.to_csv(destination / f"{name}_{year}.csv")
+
+def prepare_areas():
+    pass
 
 
 if __name__ == "__main__":
@@ -54,3 +70,10 @@ if __name__ == "__main__":
 
     # parametrize template for techs
     parametrise_template(snakemake.input.template_techs, path_output / Path(snakemake.input.template_techs).name)
+
+
+    for path_capacity_factors in snakemake.input.capacity_factors:
+        path_capacity_factors = Path(path_capacity_factors)
+        capacity_factors = xr.load_dataset(path_capacity_factors)
+
+        prepare_capacity_factors(capacity_factors, destination=path_output / "timeseries", name=path_capacity_factors.stem)
