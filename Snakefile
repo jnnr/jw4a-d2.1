@@ -10,6 +10,7 @@ include: "./rules/model.smk"
 include: "./rules/model_overrides.smk"
 include: "./rules/potentials_offshore.smk"
 include: "./rules/plot.smk"
+include: "./rules/table.smk"
 
 min_version("7.8")
 
