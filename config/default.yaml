@@ -85,3 +85,10 @@ prepare_capacity_factors:
         powercurve: ""  # TODO Change to HAWT
         # offshore: 87 # m, median hub height of SWT-3.6-107 in Europe between 2010 and 2018
         # offshore: "siemens swt 3.6 107" # most built between 2010 and 2018 in Europe
+
+
+draw_plots_capacityfactors:
+    onshore_awe: "data/europe-98-zones.geojson/europe-98-zones.geojson"
+    offshore_deep_awe: "build/shapes/eez.geojson"
+    offshore_shallow_awe: "build/shapes/eez.geojson"
+    offshore_deep_hawt: "build/shapes/eez.geojson"
