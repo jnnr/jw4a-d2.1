@@ -1,11 +1,14 @@
 rule draw_map:
     conda: "../envs/plot.yaml"
     input: 
-        path_water_depth="data/potentials_offshore/gebco_2023_sub_ice_topo/GEBCO_2023_sub_ice_topo.nc",
-        path_boundaries_eez="build/shapes/eez.geojson",
-        path_boundaries_onshore="data/europe-98-zones.geojson/europe-98-zones.geojson",
-        path_natura2000 = "data/potentials_offshore/natura2000_areas/eea_v_3035_100_k_natura2000_p_2021_v12_r01/SHP/Natura2000_end2021_rev1_epsg3035.shp"
-    output: "build/plots/map.png"
+        water_depth="data/potentials_offshore/gebco_2023_sub_ice_topo/GEBCO_2023_sub_ice_topo.nc",
+        boundaries_eez="build/shapes/eez.geojson",
+        boundaries_onshore="data/europe-98-zones.geojson/europe-98-zones.geojson",
+        natura2000="data/potentials_offshore/natura2000_areas/eea_v_3035_100_k_natura2000_p_2021_v12_r01/SHP/Natura2000_end2021_rev1_epsg3035.shp",
+        cutout="build/cutouts/cutout-era5-model-level_adapted.nc"
+    output: 
+        areas="build/plots/map.png",
+        wind_speeds="build/plots/map_wind_speeds.png"
     script: "../scripts/draw_map.py"
 
 def get_path_boundaries(wildcards):
