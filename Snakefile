@@ -12,6 +12,12 @@ include: "./rules/potentials_offshore.smk"
 include: "./rules/plot.smk"
 include: "./rules/table.smk"
 
+module run_prebuilt:
+    snakefile: "run-prebuilt-sector-coupled-euro-calliope/Snakefile"
+    prefix: "run-prebuilt-sector-coupled-euro-calliope"
+
+use rule * from run_prebuilt as run_prebuilt_*
+
 min_version("7.8")
 
 
