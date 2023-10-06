@@ -3,6 +3,12 @@ PANDOC = "pandoc --filter pantable --filter pandoc-crossref --citeproc"
 
 configfile: "config/default.yaml"
 
+module run_prebuilt:
+    snakefile: "run-prebuilt-sector-coupled-euro-calliope/Snakefile"
+    prefix: "run-prebuilt-sector-coupled-euro-calliope"
+
+use rule * from run_prebuilt as run_prebuilt_*
+
 include: "./rules/boundaries.smk"
 include: "./rules/capacity_factors.smk"
 include: "./rules/download_data.smk"
@@ -11,12 +17,8 @@ include: "./rules/model_overrides.smk"
 include: "./rules/potentials_offshore.smk"
 include: "./rules/plot.smk"
 include: "./rules/table.smk"
+include: "./rules/model_assembly.smk"
 
-module run_prebuilt:
-    snakefile: "run-prebuilt-sector-coupled-euro-calliope/Snakefile"
-    prefix: "run-prebuilt-sector-coupled-euro-calliope"
-
-use rule * from run_prebuilt as run_prebuilt_*
 
 min_version("7.8")
 
