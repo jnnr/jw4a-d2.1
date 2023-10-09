@@ -30,7 +30,7 @@ if __name__ == "__main__":
         snakemake = mock_snakemake("build_availabilitymatrix")
 
     # prepare boundaries
-    boundaries = gpd.read_file(snakemake.input.boundaries)
+    boundaries = gpd.read_file(snakemake.input.boundaries).set_index("id")
 
     # prepare cutout
     cutout = atlite.Cutout(snakemake.input.cutout)

@@ -43,7 +43,7 @@ def prepare_capacity_factors(capfac, destination, name):
     years = list(set(capfac.time.dt.year.values))
     for year in years:
         capfac_year = capfac.sel(time=str(year))
-        df_capfac_year = capfac_year.to_dataframe()["__xarray_dataarray_variable__"].unstack("dim_0")
+        df_capfac_year = capfac_year.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
         df_capfac_year.to_csv(destination / f"{name}_{year}.csv")
 
 def prepare_areas():

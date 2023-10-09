@@ -54,13 +54,13 @@ if __name__ == "__main__":
     elif snakemake.input.get("shapes") is not None:
         capacity_matrix = None
         index = None
-        shapes = gpd.read_file(snakemake.input.shapes)
+        shapes = gpd.read_file(snakemake.input.shapes).set_index("id")
 
     elif snakemake.input.get("availability") is not None:
         shapes = None
         availability = xr.load_dataarray(snakemake.input.availability)
         capacity_matrix = availability.stack(spatial=["y", "x"])
-        index = pd.RangeIndex(capacity_matrix.shape[0])
+        index = capacity_matrix.id
 
     # prepare capacity factors
     capfac_wind_awe = cutout.convert_and_aggregate(
