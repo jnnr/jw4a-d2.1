@@ -39,62 +39,6 @@ rule all:
         "build/test-report.html"
 
 
-rule run:
-    message: "Runs the demo model."
-    params:
-        slope = config["slope"],
-        x0 = config["x0"]
-    output: "build/results.pickle"
-    conda: "envs/default.yaml"
-    script: "scripts/model.py"
-
-
-rule plot:
-    message: "Visualises the demo results."
-    input:
-        results = rules.run.output
-    output: "build/plot.png"
-    conda: "envs/default.yaml"
-    script: "scripts/vis.py"
-
-
-def pandoc_options(wildcards):
-    suffix = wildcards["suffix"]
-    if suffix == "html":
-        return "--embed-resources --standalone --to html5"
-    elif suffix == "pdf":
-        return "--pdf-engine weasyprint"
-    elif suffix == "docx":
-        return []
-    else:
-        raise ValueError(f"Cannot create report with suffix {suffix}.")
-
-
-rule report:
-    message: "Compile report.{wildcards.suffix}."
-    input:
-        "report/literature.yaml",
-        "report/report.md",
-        "report/pandoc-metadata.yaml",
-        "report/apa.csl",
-        "report/reset.css",
-        "report/report.css",
-        rules.plot.output
-    params: options = pandoc_options
-    output: "build/report.{suffix}"
-    wildcard_constraints:
-        suffix = "((html)|(pdf)|(docx))"
-    conda: "envs/report.yaml"
-    shadow: "minimal"
-    shell:
-        """
-        cd report
-        ln -s ../build .
-        {PANDOC} report.md  --metadata-file=pandoc-metadata.yaml {params.options} \
-        -o ../build/report.{wildcards.suffix}
-        """
-
-
 rule dag:
      message: "Plot dependency graph of the workflow."
      conda: "envs/dag.yaml"
