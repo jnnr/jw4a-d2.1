@@ -1,4 +1,5 @@
 from snakemake.utils import min_version
+from snakemake.io import load_configfile
 PANDOC = "pandoc --filter pantable --filter pandoc-crossref --citeproc"
 
 configfile: "config/default.yaml"
@@ -6,6 +7,7 @@ configfile: "config/default.yaml"
 module run_prebuilt:
     snakefile: "run-prebuilt-sector-coupled-euro-calliope/Snakefile"
     prefix: "run-prebuilt-sector-coupled-euro-calliope"
+    config: load_configfile("config/default.yaml")
 
 use rule * from run_prebuilt as run_prebuilt_*
 
