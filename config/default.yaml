@@ -92,3 +92,7 @@ draw_plots_capacityfactors:
     offshore_deep_awe: "build/shapes/eez.geojson"
     offshore_shallow_awe: "build/shapes/eez.geojson"
     offshore_deep_hawt: "build/shapes/eez.geojson"
+
+power_density: 8  # MW/Km2
+
+scenario: "novel_wind,wind_offshore_deep_cap_max,wind_offshore_shallow_cap_max,industry_fuel,transport,heat,config_overrides,gas_storage,link_cap_dynamic,freeze-hydro-capacities,add-biofuel,synfuel_transmission,{model_resolution}"
