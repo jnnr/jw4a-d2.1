@@ -5,10 +5,12 @@ rule draw_map:
         boundaries_eez="build/shapes/eez.geojson",
         boundaries_onshore="data/europe-98-zones.geojson/europe-98-zones.geojson",
         natura2000="data/potentials_offshore/natura2000_areas/eea_v_3035_100_k_natura2000_p_2021_v12_r01/SHP/Natura2000_end2021_rev1_epsg3035.shp",
-        cutout="build/cutouts/cutout-era5-model-level_adapted.nc"
+        cutout_era5="build/cutouts/cutout-era5.nc",
+        cutout_era5_model_level="build/cutouts/cutout-era5-model-level_adapted.nc"
     output: 
         areas="build/plots/map.png",
-        wind_speeds="build/plots/map_wind_speeds.png"
+        wind_speeds_era5="build/plots/map_wind_speeds_era5.png",
+        wind_speeds_era5_model_level="build/plots/map_wind_speeds_model_level.png"
     script: "../scripts/draw_map.py"
 
 def get_path_boundaries(wildcards):

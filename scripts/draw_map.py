@@ -58,20 +58,19 @@ def map_area_potential(water_depth, boundaries_eez, boundaries_onshore, natura20
     return fig, ax
 
 
-def map_wind_speeds(wind_speed, boundaries, fig=None, ax=None):
+def map_wind_speeds(wind_speed_mean, boundaries, vmax=None, fig=None, ax=None):
     r"""
     Shows capacityfactors for both onshore and offshore, can choose between hawt and awe
     """
     if fig is None or ax is None:
-        fig, ax = plt.subplots(figsize=(12, 10))
+        fig, ax = plt.subplots(figsize=(10, 8))
 
     # prepare mean wind speed
-    wind_speed_mean = wind_speed.wind_speed.mean("time")
     wind_speed_mean = wind_speed_mean.rio.write_crs("epsg:4326").drop("spatial_ref")
 
     # plot
     boundaries.geometry.boundary.plot(ax=ax, linewidth=0.5, color='#000000')
-    wind_speed_mean.plot(cmap="Blues", ax=ax)
+    wind_speed_mean.plot(cmap="Blues", ax=ax, vmin=0, vmax=vmax)
 
     ax.set_axis_off()
 
@@ -92,10 +91,16 @@ if __name__ == "__main__":
 
     water_depth = xr.open_dataset(snakemake.input.water_depth)
 
-    wind_speed_era5_model_level = xr.load_dataset(snakemake.input.cutout)
+    wind_speed_era5 = xr.load_dataset(snakemake.input.cutout_era5)
+    wind_speed_era5_model_level = xr.load_dataset(snakemake.input.cutout_era5_model_level)
     
     map_area_potential(water_depth, boundaries_eez, boundaries_onshore, natura2000)
     plt.savefig(snakemake.output.areas, dpi=300, bbox_inches="tight", transparent=False)
 
-    map_wind_speeds(wind_speed_era5_model_level, boundaries_eez)
-    plt.savefig(snakemake.output.wind_speeds, dpi=300, bbox_inches="tight", transparent=False)
+    vmax = wind_speed_era5_model_level.wind_speed.mean("time").max()
+
+    map_wind_speeds(wind_speed_era5.wnd100m.mean("time"), boundaries_eez, vmax=vmax)
+    plt.savefig(snakemake.output.wind_speeds_era5, dpi=300, bbox_inches="tight", transparent=False)
+
+    map_wind_speeds(wind_speed_era5_model_level.wind_speed.mean("time"), boundaries_eez, vmax=vmax)
+    plt.savefig(snakemake.output.wind_speeds_era5_model_level, dpi=300, bbox_inches="tight", transparent=False)
