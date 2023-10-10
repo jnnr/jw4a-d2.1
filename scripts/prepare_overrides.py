@@ -35,7 +35,7 @@ from lib.template import parametrise_template
 import xarray as xr
 
 
-def prepare_capacity_factors(capfac, destination, name):
+def prepare_capacity_factors(capfac, destination, name, rename_columns=None):
     if not destination.exists():
         destination.mkdir(parents=True)
 
@@ -44,6 +44,10 @@ def prepare_capacity_factors(capfac, destination, name):
     for year in years:
         capfac_year = capfac.sel(time=str(year))
         df_capfac_year = capfac_year.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
+
+        if rename_columns is not None:
+            df_capfac_year = df_capfac_year.rename(columns=rename_columns)
+
         df_capfac_year.to_csv(destination / f"{name}_{year}.csv")
 
 def prepare_areas():
@@ -76,4 +80,11 @@ if __name__ == "__main__":
         path_capacity_factors = Path(path_capacity_factors)
         capacity_factors = xr.load_dataset(path_capacity_factors)
 
-        prepare_capacity_factors(capacity_factors, destination=path_output / "timeseries", name=path_capacity_factors.stem)
+        mapping = None
+        if "offshore" in str(path_capacity_factors):
+            mapping = pd.read_csv(snakemake.input.mapping, index_col=0)
+            mapping.index = mapping.index.astype(str)
+            mapping = mapping["country_code"].to_dict()
+    
+        prepare_capacity_factors(capacity_factors, destination=path_output / "timeseries", name=path_capacity_factors.stem, rename_columns=mapping)
+    

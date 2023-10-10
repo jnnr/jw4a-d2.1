@@ -14,6 +14,7 @@ rule prepare_overrides:
             "data/templates/locations-wind-offshore-shallow.yaml",
         ],
         template_techs="data/templates/techs-novel-wind.yaml",
+        mapping="build/shapes/map_eez_eurospores.csv"
     output:
         directory("build/overrides")
     script: "../scripts/prepare_overrides.py"
