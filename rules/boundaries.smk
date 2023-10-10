@@ -14,3 +14,10 @@ rule eez:
         | fio filter "f.properties.territory1 in [{params.countries}]"\
         | fio collect > {output}
         """
+
+rule map_eez_to_eurospores:
+    input:
+        eez = "build/shapes/eez.geojson",
+        eurospores = "data/europe-98-zones.geojson/europe-98-zones.geojson"
+    output: "build/shapes/map_eez_eurospores.csv"
+    script: "../scripts/map_eez_to_eurospores.py"
