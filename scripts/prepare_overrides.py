@@ -39,16 +39,12 @@ def prepare_capacity_factors(capfac, destination, name, rename_columns=None):
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    # chunk the data into years and save it as csv
-    years = list(set(capfac.time.dt.year.values))
-    for year in years:
-        capfac_year = capfac.sel(time=str(year))
-        df_capfac_year = capfac_year.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
+    df_capfac = capfac.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
 
-        if rename_columns is not None:
-            df_capfac_year = df_capfac_year.rename(columns=rename_columns)
+    if rename_columns is not None:
+        df_capfac = df_capfac.rename(columns=rename_columns)
 
-        df_capfac_year.to_csv(destination / f"{name}_{year}.csv")
+    df_capfac.to_csv(destination / f"{name}.csv")
 
 def prepare_areas():
     pass
