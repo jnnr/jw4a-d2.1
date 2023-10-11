@@ -27,13 +27,15 @@ if __name__ == "__main__":
 
         snakemake = mock_snakemake("prepare_potentials_offshore")
 
-    # boundaries_offshore = gpd.read_file(snakemake.input.boundaries_offshore)
-    # water_depth = gpd.read_file(snakemake.input.water_depth)
-    # natura2000 = gpd.read_file(snakemake.input.natura2000)
+    areas = pd.read_csv(snakemake.input.areas, index_col=0)
 
-    # TODO: Why not one df?
-    potentials_offshore_deep = pd.DataFrame()
-    potentials_offshore_shallow = pd.DataFrame()
+    potentials = areas.loc[:, ["available_area"]]
 
-    potentials_offshore_deep.to_csv(snakemake.output.potentials_offshore_deep)
-    potentials_offshore_shallow.to_csv(snakemake.output.potentials_offshore_shallow)
+    potentials["energy_cap_max"] = potentials["available_area"] * snakemake.config["power_density"]
+
+    # map eez to eurospores regions
+    mapping = pd.read_csv(snakemake.input.mapping, index_col=0)
+    mapping = mapping["country_code"].to_dict()
+    potentials = potentials.rename(index=mapping)
+
+    potentials.to_csv(snakemake.output.potentials)
