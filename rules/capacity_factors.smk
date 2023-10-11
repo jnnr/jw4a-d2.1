@@ -25,4 +25,6 @@ rule prepare_capacity_factors:
     input: 
         unpack(get_inputs)
     output: "build/capacity_factors/capacity_factors_{tech}.nc"
+    wildcard_constraints:
+        tech = "|".join(config["prepare_capacity_factors"].keys())
     script: "../scripts/prepare_capacity_factors.py"

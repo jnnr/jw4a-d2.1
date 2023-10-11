@@ -26,3 +26,12 @@ rule draw_plots_capacityfactors:
         path_plot = "build/plots/load_duration_wind_{tech}.png",
         path_plot_average = "build/plots/capacity_factor_average_{tech}.png"
     script: "../scripts/draw_plots_capacityfactors.py"
+
+
+rule prepare_old_capacity_factors_for_plot:
+    input: "run-prebuilt-sector-coupled-euro-calliope/build/pre-built/model/eurospores/capacityfactors-{tech}.csv"
+    output: "build/capacity_factors/capacity_factors_old_{tech}.nc"
+    wildcard_constraints:
+        tech = "wind-offshore|wind-onshore"
+    script: "../scripts/prepare_old_capacity_factors_for_plot.py"
+

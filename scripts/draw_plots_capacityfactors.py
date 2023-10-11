@@ -61,13 +61,16 @@ def sort_timeseries(data, ascending=True):
     return sorted_data
 
 
-def plot_annual_average(capacity_factors, labels, fig=None, ax=None):
+def plot_annual_average(capacity_factors, labels=None, fig=None, ax=None):
     if fig is None or ax is None:
         fig, ax = plt.subplots(figsize=(10, 5))
 
     df = capacity_factors.groupby("time.year").mean("time").to_dataframe()["__xarray_dataarray_variable__"].unstack("year")
     df = df.assign(mean=df.mean(axis=1)).sort_values('mean').drop('mean', axis=1)
-    ticks = labels.loc[df.index]
+    if labels is not None:
+        ticks = labels.loc[df.index]
+    else:
+        ticks = df.index
     df.index = df.index.map(str)
 
     cmap = plt.get_cmap('rainbow', len(df.columns))
@@ -99,23 +102,25 @@ if __name__ ==  "__main__":
 
     # prepare labels to properly name the regions
     if snakemake.wildcards.tech in ["offshore_deep_awe", "offshore_shallow_awe", "offshore_deep_hawt"]:
-        labels = boundaries[["iso_sov1", "iso_sov2"]].apply(format_tuple, axis=1)
+        labels = boundaries.set_index("id")[["iso_sov1", "iso_sov2"]].apply(format_tuple, axis=1)
 
-    elif snakemake.wildcards.tech in ["onshore_awe", "onshore_hawt"]:
-        labels = boundaries["id"]
+    elif snakemake.wildcards.tech in ["onshore_awe", "onshore_hawt", "old_wind-onshore", "old_wind-offshore"]:
+        labels = None#boundaries["id"]
 
     # plot annual average
     fig, ax = plot_annual_average(capacity_factors, labels)
     plt.savefig(snakemake.output.path_plot_average, dpi=300, transparent=False)
 
     # split index in year and month-day-hour
-    df_capacity_factors = capacity_factors.to_dataframe()["__xarray_dataarray_variable__"].unstack("dim_0")
+    df_capacity_factors = capacity_factors.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
     df_capacity_factors["year"] = df_capacity_factors.index.year
     df_capacity_factors["month-day-hour"] = df_capacity_factors.index.strftime('%m %d %H')
     df_capacity_factors.set_index(["year", "month-day-hour"], inplace=True)
 
     # give proper names to regions
-    df_capacity_factors.columns = labels.loc[df_capacity_factors.columns]
+    if labels is not None:
+        df_capacity_factors.columns = labels.loc[df_capacity_factors.columns]
+        
     df_capacity_factors.columns.name = "region"
     
     # sort data

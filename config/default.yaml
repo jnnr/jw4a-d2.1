@@ -92,6 +92,8 @@ draw_plots_capacityfactors:
     offshore_deep_awe: "build/shapes/eez.geojson"
     offshore_shallow_awe: "build/shapes/eez.geojson"
     offshore_deep_hawt: "build/shapes/eez.geojson"
+    old_wind-onshore: "data/europe-98-zones.geojson/europe-98-zones.geojson"
+    old_wind-offshore: "data/europe-98-zones.geojson/europe-98-zones.geojson"
 
 power_density: 8  # MW/Km2
 
