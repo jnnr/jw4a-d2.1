@@ -42,7 +42,8 @@ def prepare_capacity_factors(capfac, destination, name, rename_columns=None):
     df_capfac = capfac.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
 
     if rename_columns is not None:
-        df_capfac = df_capfac.rename(columns=rename_columns)
+        df_capfac = df_capfac.loc[:, rename_columns.keys()]  # drop columns that are not in rename_columns
+        df_capfac = df_capfac.rename(columns=rename_columns, )
 
     df_capfac.to_csv(destination / f"{name}.csv")
 

@@ -11,7 +11,7 @@ overrides:
                     name: Floating wind
                     parent: wind
                 constraints:
-                    resource: file=capacityfactors-wind_floating.csv
+                    resource: file=../../../overrides/timeseries/capacityfactors-wind_floating.csv
                     resource_unit: energy_per_cap
                     lifetime: 30 # [@JRC:2014] Table 5
                 costs:
@@ -25,7 +25,7 @@ overrides:
                     parent: supply
                     carrier: electricity
                 constraints: 
-                    resource: file=capacityfactors-awe_onshore_sw.csv 
+                    resource: file=../../../overrides/timeseries/capacity_factors_onshore_awe.csv
                     resource_unit: energy_per_cap
                     lifetime: 30
                     resource_area_per_energy_cap: 5
@@ -40,7 +40,7 @@ overrides:
                     parent: supply
                     carrier: electricity
                 constraints: 
-                    resource: file=capacityfactors-awe_shallow_fw1.csv
+                    resource: file=../../../overrides/timeseries/capacity_factors_offshore_shallow_awe.csv
                     resource_unit: energy_per_cap
                     lifetime: 30
                 costs:
@@ -54,7 +54,7 @@ overrides:
                     parent: supply
                     carrier: electricity
                 constraints: 
-                    resource: file=capacityfactors-awe_deep_fw1.csv
+                    resource: file=../../../overrides/timeseries/capacity_factors_offshore_deep_awe.csv
                     resource_unit: energy_per_cap
                     lifetime: 30
                 costs:

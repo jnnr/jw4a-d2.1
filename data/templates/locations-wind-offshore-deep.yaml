@@ -1,4 +1,10 @@
 overrides:
+    novel_wind:
+        locations:
+            {% for id, potential in potentials.iterrows() %}
+            {{ id }}.techs.awe_deep_fw1:
+            {% endfor %}
+
     wind_offshore_deep_cap_max:
         group_constraints:
             {% for id, potential in potentials.iterrows() %}

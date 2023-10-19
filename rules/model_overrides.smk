@@ -1,8 +1,8 @@
 rule prepare_overrides:
     input: 
         potentials=[
-            "data/potentials_dummy/potentials-wind-offshore-deep.csv",
-            "data/potentials_dummy/potentials-wind-offshore-shallow.csv",
+            "build/potentials_offshore/potentials_offshore_deep.csv",
+            "build/potentials_offshore/potentials_offshore_shallow.csv",
             ],
         capacity_factors=[
             "build/capacity_factors/capacity_factors_offshore_deep_awe.nc",
