@@ -14,7 +14,6 @@ use rule * from run_prebuilt as run_prebuilt_*
 include: "./rules/boundaries.smk"
 include: "./rules/capacity_factors.smk"
 include: "./rules/download_data.smk"
-include: "./rules/model.smk"
 include: "./rules/model_overrides.smk"
 include: "./rules/potentials_offshore.smk"
 include: "./rules/plot.smk"
@@ -35,9 +34,11 @@ onerror:
 rule all:
     message: "Run entire analysis and compile report."
     input:
-        "build/report.html",
-        "build/test-report.html"
-
+        rules.draw_map.output[0],
+        # rules.draw_plots_capacityfactors.output[0],  # TODO contains wildcards. What to do?
+        rules.table_area_potential_offshore.output[0],
+        rules.assemble_prebuild.output[0],
+        expand("run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/{year}_{model_resolution}.nc", year="2016", model_resolution="res_3h")
 
 rule dag:
      message: "Plot dependency graph of the workflow."
