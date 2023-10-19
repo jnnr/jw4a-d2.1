@@ -10,8 +10,7 @@ rule draw_map:
     output: 
         areas="build/plots/map.png",
         wind_speeds_era5="build/plots/map_wind_speeds_era5.png",
-        wind_speeds_era5_model_level="build/plots/map_wind_speeds_model_level.png",
-        wind_speeds_diff="build/plots/map_wind_speeds_diff.png"
+        wind_speeds_era5_model_level="build/plots/map_wind_speeds_model_level.png"
     script: "../scripts/draw_map.py"
 
 def get_path_boundaries(wildcards):
