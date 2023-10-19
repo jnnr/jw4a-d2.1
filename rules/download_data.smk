@@ -33,3 +33,8 @@ rule download_ERA5_cutout:
     output: 
         target_dir="build/cutouts/cutout-era5-model-level.nc"
     script: "../scripts/download_weatherdata_ERA5.py"
+
+rule download_ERA5_cutout_conventional:
+    output:
+        target_dir="build/cutouts/cutout-era5.nc"
+    script: "../scripts/download_cutout_era5.py"
