@@ -1,0 +1,5 @@
+name: calliope
+channels:
+    - conda-forge
+dependencies:
+    - calliope
