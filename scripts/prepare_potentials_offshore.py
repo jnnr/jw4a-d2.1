@@ -32,10 +32,12 @@ if __name__ == "__main__":
     potentials = areas.loc[:, ["available_area"]]
 
     potentials["energy_cap_max"] = potentials["available_area"] * snakemake.config["power_density"]
+    potentials["energy_cap_max"] = potentials["energy_cap_max"] / 100000  # MW to 100.000 MW
 
     # map eez to eurospores regions
     mapping = pd.read_csv(snakemake.input.mapping, index_col=0)
     mapping = mapping["country_code"].to_dict()
+    potentials = potentials.loc[mapping.keys(), :]
     potentials = potentials.rename(index=mapping)
 
     potentials.to_csv(snakemake.output.potentials)
