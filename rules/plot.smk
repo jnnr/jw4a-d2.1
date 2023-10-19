@@ -10,7 +10,8 @@ rule draw_map:
     output: 
         areas="build/plots/map.png",
         wind_speeds_era5="build/plots/map_wind_speeds_era5.png",
-        wind_speeds_era5_model_level="build/plots/map_wind_speeds_model_level.png"
+        wind_speeds_era5_model_level="build/plots/map_wind_speeds_model_level.png",
+        wind_speeds_diff="build/plots/map_wind_speeds_diff.png"
     script: "../scripts/draw_map.py"
 
 def get_path_boundaries(wildcards):
@@ -35,3 +36,17 @@ rule prepare_old_capacity_factors_for_plot:
         tech = "wind-offshore|wind-onshore"
     script: "../scripts/prepare_old_capacity_factors_for_plot.py"
 
+rule postprocess_model_results:
+    conda: "../envs/calliope.yaml"
+    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_12h_pristine_5d.nc"
+    output: 
+        energy_cap="build/postprocessed_results/energy_cap.csv",
+        energy_cap_max="build/postprocessed_results/energy_cap_max.csv"
+    script: "../scripts/postprocess_model_results.py"
+
+
+rule plot_model_results:
+    conda: "../envs/plot.yaml"
+    input: "build/postprocessed_results/energy_cap.csv"
+    output: "build/plots/model_results.png"
+    script: "../scripts/plot_model_results.py"
