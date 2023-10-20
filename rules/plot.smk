@@ -37,10 +37,8 @@ rule prepare_old_capacity_factors_for_plot:
 
 rule postprocess_model_results:
     conda: "../envs/calliope.yaml"
-    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_12h_pristine_5d.nc"
-    output: 
-        energy_cap="build/postprocessed_results/energy_cap.csv",
-        energy_cap_max="build/postprocessed_results/energy_cap_max.csv"
+    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_12h_.nc"
+    output: "build/postprocessed_results/energy_cap.csv",
     script: "../scripts/postprocess_model_results.py"
 
 

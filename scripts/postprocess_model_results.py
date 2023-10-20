@@ -22,6 +22,6 @@ if __name__ == "__main__":
 
     energy_cap_max = get_tidy_data(model, "energy_cap_max").sort_values(by=["locs", "techs"])
 
-    energy_cap.to_csv(snakemake.output.energy_cap, index=False)
+    df = energy_cap.merge(energy_cap_max, on=["locs", "techs"])
 
-    energy_cap_max.to_csv(snakemake.output.energy_cap_max, index=False)
+    df.to_csv(snakemake.output[0], index=False)
