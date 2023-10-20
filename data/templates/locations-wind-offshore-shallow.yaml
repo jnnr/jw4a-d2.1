@@ -5,6 +5,12 @@ overrides:
             {{ id }}.techs.awe_shallow_fw1:
             {% endfor %}
 
+    relax_wind_offshore_energy_cap_max:
+        locations:
+            {% for id, potential in potentials.iterrows() %}
+            {{ id }}.techs.wind_offshore.constraints.energy_cap_max: inf
+            {% endfor %}
+
     wind_offshore_shallow_cap_max:
         group_constraints:
             {% for id, potential in potentials.iterrows() %}
