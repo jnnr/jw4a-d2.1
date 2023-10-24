@@ -91,6 +91,16 @@ def format_tuple(tupl):
     return result
 
 
+def get_relabel_dict(locs):
+    import re
+    return {loc: re.sub("_\\d+$", "", loc) for loc in locs}
+
+
+def relabel_index(ds, index_name, relabel_dict):
+    new_index = ds.indexes[index_name].map(relabel_dict)
+    return ds.assign({index_name: new_index})
+
+
 if __name__ ==  "__main__":
     if "snakemake" not in globals():
         from lib.helpers import mock_snakemake
@@ -103,9 +113,13 @@ if __name__ ==  "__main__":
     # prepare labels to properly name the regions
     if snakemake.wildcards.tech in ["offshore_deep_awe", "offshore_shallow_awe", "offshore_deep_hawt"]:
         labels = boundaries.set_index("id")[["iso_sov1", "iso_sov2"]].apply(format_tuple, axis=1)
+        capacity_factors = relabel_index(capacity_factors, "id", labels)
+        labels = None
 
     elif snakemake.wildcards.tech in ["onshore_awe", "onshore_hawt", "old_wind-onshore", "old_wind-offshore"]:
-        labels = None#boundaries["id"]
+        relabel_dict = get_relabel_dict(capacity_factors.id.values)
+        capacity_factors = relabel_index(capacity_factors, "id", relabel_dict).groupby("id").mean()
+        labels = None
 
     # plot annual average
     fig, ax = plot_annual_average(capacity_factors, labels)
@@ -141,10 +155,10 @@ if __name__ ==  "__main__":
 
     # plot
     (
-        pn.ggplot(melted, pn.aes(x="sorted_hours", y="var_value", color="year"))
-        + pn.geom_line(alpha=0.5)
-        + pn.facet_wrap("region")
+        pn.ggplot(melted, pn.aes(x="sorted_hours", y="var_value"))
+        + pn.geom_line(size=0.8, alpha=0.5, color="blue")
+        + pn.facet_wrap("region", ncol=8)
         + pn.theme_minimal()
         + pn.labs(x="Sorted hours", y="Capacity factor", title="Load duration curves")
         + pn.theme(axis_text_x=pn.element_text(rotation=60, hjust=1))
-    ).save(snakemake.output.path_plot, dpi=300, height=15, width=13, facecolor="w", transparent=False)
+    ).save(snakemake.output.path_plot, dpi=300, height=6, width=10, facecolor="w", transparent=False)
