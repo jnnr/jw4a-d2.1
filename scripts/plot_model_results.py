@@ -1,7 +1,7 @@
 import pandas as pd
 import plotnine as pn
 import numpy as np
-
+import json
 
 
 def aggregate_locs(df):
@@ -32,6 +32,7 @@ def plot_results(data, var_name, var_unit, sort=True):
         + pn.geom_col(pn.aes(x="order", y=var_name, fill="techs"))
         + pn.labs(x="Region", y=f"{var_name} ({var_unit})")
         + pn.scale_color_discrete(guide=False)
+        + pn.theme(axis_text_x=pn.element_text(angle=90), legend_position="bottom")
     )
 
     return plot
@@ -42,7 +43,10 @@ if __name__ == "__main__":
     FACTOR_10000_MW_to_GW = 100
     RENEWABLES = ["open_field_pv", "roof_mounted_pv", "wind", "awe"]
 
-    df = pd.read_csv(snakemake.input[0])
+    df = pd.read_csv(snakemake.input.energy_cap)
+
+    with open(snakemake.input.tech_names) as f:
+        tech_names = json.load(f)
 
     df.loc[:, ["energy_cap", "energy_cap_max"]] = df.loc[:, ["energy_cap", "energy_cap_max"]] * FACTOR_10000_MW_to_GW
 
@@ -53,4 +57,6 @@ if __name__ == "__main__":
 
     df_re = filter_techs(df, RENEWABLES)
 
-    plot_results(df_re, "energy_cap", "GW").save(snakemake.output[0], dpi=300, height=6, width=12, facecolor="w", transparent=False)
+    df_re.loc[:, "techs"] = df_re.loc[:, "techs"].replace(tech_names) # Nice names
+
+    plot_results(df_re, "energy_cap", "GW").save(snakemake.output[0], dpi=300, height=5, width=10, facecolor="w", transparent=False)

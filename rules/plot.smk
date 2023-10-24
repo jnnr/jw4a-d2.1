@@ -38,12 +38,16 @@ rule prepare_old_capacity_factors_for_plot:
 rule postprocess_model_results:
     conda: "../envs/calliope.yaml"
     input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_12h_.nc"
-    output: "build/postprocessed_results/energy_cap.csv",
+    output:
+        energy_cap="build/postprocessed_results/energy_cap.csv",
+        tech_names="build/postprocessed_results/tech_names.json"
     script: "../scripts/postprocess_model_results.py"
 
 
 rule plot_model_results:
     conda: "../envs/plot.yaml"
-    input: "build/postprocessed_results/energy_cap.csv"
+    input:
+        energy_cap="build/postprocessed_results/energy_cap.csv",
+        tech_names="build/postprocessed_results/tech_names.json"
     output: "build/plots/model_results.png"
     script: "../scripts/plot_model_results.py"

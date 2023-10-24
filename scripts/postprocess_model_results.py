@@ -1,5 +1,6 @@
 import calliope
 import pandas as pd
+import json
 
 
 def get_tidy_data(model: calliope.Model, coefficient: str) -> pd.DataFrame:
@@ -15,6 +16,10 @@ def get_tidy_data(model: calliope.Model, coefficient: str) -> pd.DataFrame:
     return data
 
 
+def get_tech_names(model):
+    return model.inputs.names.to_pandas().to_dict()
+
+
 if __name__ == "__main__":
     model = calliope.read_netcdf(snakemake.input[0])
     
@@ -24,4 +29,8 @@ if __name__ == "__main__":
 
     df = energy_cap.merge(energy_cap_max, on=["locs", "techs"])
 
-    df.to_csv(snakemake.output[0], index=False)
+    df.to_csv(snakemake.output.energy_cap, index=False)
+
+    tech_names = get_tech_names(model)
+    with open(snakemake.output.tech_names, "w") as f:
+        json.dump(tech_names, f)
