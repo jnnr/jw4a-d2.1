@@ -97,4 +97,4 @@ draw_plots_capacityfactors:
 
 power_density: 8  # MW/Km2
 
-scenario: "relax_wind_offshore_energy_cap_max,novel_wind,wind_offshore_deep_cap_max,wind_offshore_shallow_cap_max,industry_fuel,transport,heat,config_overrides,gas_storage,link_cap_dynamic,freeze-hydro-capacities,add-biofuel,synfuel_transmission,{model_resolution}"
+scenario: "relax_wind_offshore_energy_cap_max,novel_wind,wind_offshore_deep_cap_max,wind_offshore_shallow_cap_max,industry_fuel,transport,heat,config_overrides,gas_storage,link_cap_dynamic,freeze-hydro-capacities,add-biofuel,synfuel_transmission,res_12h"
