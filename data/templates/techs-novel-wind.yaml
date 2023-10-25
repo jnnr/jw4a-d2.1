@@ -6,19 +6,19 @@
 overrides:
     novel_wind:
         techs:
-            wind_floating:
-                essentials:
-                    name: Floating wind
-                    parent: wind
-                constraints:
-                    resource: file=../../../overrides/timeseries/capacityfactors-wind_floating.csv
-                    resource_unit: energy_per_cap
-                    lifetime: 30 # [@JRC:2014] Table 5
-                costs:
-                    monetary:
-                        energy_cap: 294.50 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
-                        om_annual: 4.29 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
-                        om_prod: 0.00024 # (10,000 EUR2013/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+            # wind_floating:
+            #     essentials:
+            #         name: Floating wind
+            #         parent: wind
+            #     constraints:
+            #         resource: file=../../../overrides/timeseries/capacityfactors-wind_floating.csv
+            #         resource_unit: energy_per_cap
+            #         lifetime: 30 # [@JRC:2014] Table 5
+            #     costs:
+            #         monetary:
+            #             energy_cap: 294.50 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+            #             om_annual: 4.29 # (10,000 EUR2015/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
+            #             om_prod: 0.00024 # (10,000 EUR2013/MW) | Danish energy agency (technology data for el/dh, average of 21 offshore and nearshore turbines, 2050)
             awe_onshore_sw: 
                 essentials:
                     name: AWE onshore sw
