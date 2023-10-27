@@ -27,12 +27,15 @@ if __name__ == "__main__":
 
         snakemake = mock_snakemake("prepare_potentials_offshore")
 
+    MW_TO_100GW = 1e-5 # (100GW/MW)
+    M2_TO_KM2 = 1e-6 # (km2/m2)
+
     areas = pd.read_csv(snakemake.input.areas, index_col=0)
 
     potentials = areas.loc[:, ["available_area"]]
 
     potentials["energy_cap_max"] = potentials["available_area"] * snakemake.config["power_density"]
-    potentials["energy_cap_max"] = potentials["energy_cap_max"] / 100000  # MW to 100.000 MW
+    potentials["energy_cap_max"] = potentials["energy_cap_max"] * M2_TO_KM2 * MW_TO_100GW
 
     # map eez to eurospores regions
     mapping = pd.read_csv(snakemake.input.mapping, index_col=0)

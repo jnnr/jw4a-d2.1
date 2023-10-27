@@ -11,7 +11,7 @@ def format_tuple(tupl):
 if __name__ == "__main__":
 
     def prepare_table(path_area_potential):
-        METER2_PER_KM2 = 1e6
+
         area_potential = pd.read_csv(path_area_potential)
 
         table = area_potential.loc[:, ["area_km2", "available_area", "available_share"]]
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
         # format numbers
         table.loc[:, "available_share"] = np.round(table.loc[:, "available_share"], 2)
-        table.loc[:, "available_area"] = table.loc[:, "available_area"].apply(lambda x: f"{x/METER2_PER_KM2:.0f}")
+        table.loc[:, "available_area"] = table.loc[:, "available_area"].apply(lambda x: f"{x:.0f}")
 
         table = table.set_index(["shortname", "area_km2"])
 
