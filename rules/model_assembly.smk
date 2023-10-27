@@ -8,6 +8,7 @@ rule assemble_prebuild:
         import_paths=[
                 "'../../../overrides/locations-wind-offshore-deep.yaml'",
                 "'../../../overrides/locations-wind-offshore-shallow.yaml'",
+                "'../../../overrides/locations-wind-onshore.yaml'",
                 "'../../../overrides/techs-novel-wind.yaml'",
             ],
         years=["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"]
