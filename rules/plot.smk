@@ -27,6 +27,17 @@ rule draw_plots_capacityfactors:
         path_plot_average = "build/plots/capacity_factor_average_{tech}.png"
     script: "../scripts/draw_plots_capacityfactors.py"
 
+rule draw_boxplot_capacityfactors:
+    conda: "../envs/plot.yaml"
+    input:
+        offshore_deep_awe="build/capacity_factors/capacity_factors_offshore_deep_awe.nc",
+        offshore_shallow_awe="build/capacity_factors/capacity_factors_offshore_shallow_awe.nc",
+        old_wind_offshore="build/capacity_factors/capacity_factors_old_wind-offshore.nc",
+        old_wind_onshore="build/capacity_factors/capacity_factors_old_wind-onshore.nc",
+        onshore_awe="build/capacity_factors/capacity_factors_onshore_awe.nc"
+    output:
+        path_plot = "build/plots/boxplot_capacityfactors.png",
+    script: "../scripts/draw_boxplots_capacityfactors.py"
 
 rule prepare_old_capacity_factors_for_plot:
     input: "run-prebuilt-sector-coupled-euro-calliope/build/pre-built/model/eurospores/capacityfactors-{tech}.csv"
@@ -37,17 +48,17 @@ rule prepare_old_capacity_factors_for_plot:
 
 rule postprocess_model_results:
     conda: "../envs/calliope.yaml"
-    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_12h.nc"
+    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_{model_resolution}.nc"
     output:
-        energy_cap="build/postprocessed_results/energy_cap.csv",
-        tech_names="build/postprocessed_results/tech_names.json"
+        energy_cap="build/postprocessed_results/energy_cap_{model_resolution}.csv",
+        tech_names="build/postprocessed_results/tech_names_{model_resolution}.json"
     script: "../scripts/postprocess_model_results.py"
 
 
 rule plot_model_results:
     conda: "../envs/plot.yaml"
     input:
-        energy_cap="build/postprocessed_results/energy_cap.csv",
-        tech_names="build/postprocessed_results/tech_names.json"
-    output: "build/plots/model_results.png"
+        energy_cap="build/postprocessed_results/energy_cap_{model_resolution}.csv",
+        tech_names="build/postprocessed_results/tech_names_{model_resolution}.json"
+    output: "build/plots/model_results_{model_resolution}.png"
     script: "../scripts/plot_model_results.py"
