@@ -13,5 +13,7 @@ dependencies:
     - netCDF4
     - ipykernel
     - atlite
+    - pip:
+        - -e ./lib
 variables:
     SNAKEMAKE_PROFILE: ./profiles/default
