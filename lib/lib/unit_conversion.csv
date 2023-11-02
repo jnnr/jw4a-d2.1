@@ -1,0 +1,7 @@
+var_name,model_units,target_units,conversion_factor
+energy_cap,100GW,GW,100
+energy_cap_max,100GW,GW,100
+energy_prod,100GWh,TWh,0.1
+resource_area,10000km2,km2,10000
+available_area,10000km2,km2,10000
+cost,1e9EUR,EUR,1e9
