@@ -2,6 +2,7 @@ import pandas as pd
 import plotnine as pn
 import numpy as np
 import json
+from lib import colors
 
 
 def aggregate_locs(df):
@@ -33,6 +34,7 @@ def plot_results(data, var_name, var_unit, sort=True):
         + pn.labs(x="Region", y=f"{var_name} ({var_unit})")
         + pn.scale_color_discrete(guide=False)
         + pn.theme(axis_text_x=pn.element_text(angle=90), legend_position="bottom")
+        + pn.scale_fill_manual(breaks=list(colors.keys()), values=list(colors.values()))
     )
 
     return plot

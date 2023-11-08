@@ -11,4 +11,13 @@ Other renewable: #94cd71
 Hard coal: #454545
 other conventional: #7c877c
 
-
+AWE onshore sw: #ddddddff
+AWE shallow fw1: #9ecbedff
+AWE deep fw1: #3c97daff
+# Conventional wind onshore: #ffcea8ff
+Onshore wind competing with open field PV on land: #ffcea8ff
+Onshore wind without land competition: #ffcea8ff
+Offshore wind: #fe9d52ff
+Open field PV: yellow
+Roof mounted PV: orange
+# Conventional wind offshore deep: #ca472fff

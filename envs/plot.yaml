@@ -8,3 +8,6 @@ dependencies:
     - plotnine
     - xarray
     - geopandas
+    - pip
+    - pip:
+        - ../../lib
