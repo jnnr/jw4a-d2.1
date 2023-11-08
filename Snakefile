@@ -4,6 +4,11 @@ PANDOC = "pandoc --filter pantable --filter pandoc-crossref --citeproc"
 
 configfile: "config/default.yaml"
 
+wildcard_constraints:
+    year = "2010|2011|2012|2013|2014|2015|2016|2017|2018",
+    model_resolution = "res_1h|res_3h|res_6h|res_12h",
+    scenario = "|".join(config["scenario"].keys())
+
 module run_prebuilt:
     snakefile: "run-prebuilt-sector-coupled-euro-calliope/Snakefile"
     prefix: "run-prebuilt-sector-coupled-euro-calliope"

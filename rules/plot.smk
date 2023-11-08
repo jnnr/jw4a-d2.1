@@ -48,17 +48,17 @@ rule prepare_old_capacity_factors_for_plot:
 
 rule postprocess_model_results:
     conda: "../envs/calliope.yaml"
-    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_{model_resolution}.nc"
+    input: ancient("run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/{year}_{resolution}_{model_resolution}_{scenario}.nc")
     output:
-        energy_cap="build/postprocessed_results/energy_cap_{model_resolution}.csv",
-        tech_names="build/postprocessed_results/tech_names_{model_resolution}.json"
+        energy_cap="build/postprocessed_results/{year}_{resolution}_{model_resolution}_{scenario}_energy_cap.csv",
+        tech_names="build/postprocessed_results/{year}_{resolution}_{model_resolution}_{scenario}_tech_names.json"
     script: "../scripts/postprocess_model_results.py"
 
 
 rule plot_model_results:
     conda: "../envs/plot.yaml"
     input:
-        energy_cap="build/postprocessed_results/energy_cap_{model_resolution}.csv",
-        tech_names="build/postprocessed_results/tech_names_{model_resolution}.json"
-    output: "build/plots/model_results_{model_resolution}.png"
+        energy_cap="build/postprocessed_results/{year}_{resolution}_{model_resolution}_{scenario}_energy_cap.csv",
+        tech_names="build/postprocessed_results/{year}_{resolution}_{model_resolution}_{scenario}_tech_names.json"
+    output: "build/plots/{year}_{resolution}_{model_resolution}_{scenario}_energy_cap.png"
     script: "../scripts/plot_model_results.py"

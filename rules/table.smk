@@ -7,6 +7,6 @@ rule table_area_potential_offshore:
 
 rule table_area_constraints:
     conda: "../envs/calliope.yaml"
-    input: "run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/2016_res_6h_w_noveltech.nc"
-    output: "build/tables/area_constraints.csv"
+    input: ancient("run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/{year}_{resolution}_{model_resolution}_{scenario}.nc")
+    output: "build/tables/{year}_{resolution}_{model_resolution}_{scenario}_area_constraints.csv"
     script: "../scripts/table_area_constraints.py"
