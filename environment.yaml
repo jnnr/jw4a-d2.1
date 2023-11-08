@@ -13,6 +13,7 @@ dependencies:
     - netCDF4
     - ipykernel
     - atlite
+    - pip
     - pip:
         - -e ./lib
 variables:
