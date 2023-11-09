@@ -1,6 +1,7 @@
+import json
+
 import calliope
 import pandas as pd
-import json
 
 
 def get_tidy_data(model: calliope.Model, coefficient: str) -> pd.DataFrame:
@@ -21,11 +22,18 @@ def get_tech_names(model):
 
 
 if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
+
+        snakemake = mock_snakemake("postprocess_model_results")
+
     model = calliope.read_netcdf(snakemake.input[0])
-    
+
     energy_cap = get_tidy_data(model, "energy_cap").sort_values(by=["locs", "techs"])
 
-    energy_cap_max = get_tidy_data(model, "energy_cap_max").sort_values(by=["locs", "techs"])
+    energy_cap_max = get_tidy_data(model, "energy_cap_max").sort_values(
+        by=["locs", "techs"]
+    )
 
     df = energy_cap.merge(energy_cap_max, on=["locs", "techs"])
 

@@ -1,25 +1,38 @@
 import geopandas as gpd
-import pandas as pd
 
 
 def get_mapping_advanced(eez, eurospores):
     raise UserWarning("Not tested and probably not working.")
-    # more sophisticated mapping of eez to eurospores. Problem: Spanish EEZ's geometry includes both atlantic and mediterranean sea, should be split (but before capacityfactors are calculated)
+    # more sophisticated mapping of eez to eurospores.
+    # Problem: Spanish EEZ's geometry includes both atlantic and mediterranean sea,
+    # should be split (but before capacityfactors are calculated)
     # need to buffer the eurospores to make sure they intersect
     buffered_eurospores = eurospores.loc[:, ["id", "geometry"]]
     buffered_eurospores.geometry = buffered_eurospores.buffer(10000)
-    intersecting = gpd.sjoin(eez.loc[eez["iso_sov2"].isna()], buffered_eurospores, how="left", predicate="intersects")
+    intersecting = gpd.sjoin(
+        eez.loc[eez["iso_sov2"].isna()],
+        buffered_eurospores,
+        how="left",
+        predicate="intersects",
+    )
 
     # merge geometry back in
-    mapping = intersecting.loc[:, ["id_left", "geometry", "id_right"]].merge(buffered_eurospores.loc[:, ["id", "geometry"]].rename(columns={"id": "id_right", "geometry": "geometry_right"}), on="id_right", how="left"
-        )
+    mapping = intersecting.loc[:, ["id_left", "geometry", "id_right"]].merge(
+        buffered_eurospores.loc[:, ["id", "geometry"]].rename(
+            columns={"id": "id_right", "geometry": "geometry_right"}
+        ),
+        on="id_right",
+        how="left",
+    )
 
     # rank by area of intersection
-    mapping["rank"] = mapping.apply(lambda x: x["geometry"].intersection(x["geometry_right"]).area, axis=1)
+    mapping["rank"] = mapping.apply(
+        lambda x: x["geometry"].intersection(x["geometry_right"]).area, axis=1
+    )
 
     # keep those with highest overlap
     mapping = mapping.sort_values("rank", ascending=False).groupby("id_left").first()
-    
+
     return mapping
 
 
@@ -32,6 +45,11 @@ def get_mapping_simple(eez, eurospores):
 
 
 if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
+
+        snakemake = mock_snakemake("map_eez_to_eurospores")
+
     eez = gpd.read_file(snakemake.input.eez)
     eurospores = gpd.read_file(snakemake.input.eurospores)
 

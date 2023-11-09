@@ -18,21 +18,23 @@ Description
 -------------
 Create a yaml file that adds AWE to the model.
 
-These techs are added to the model: 
+These techs are added to the model:
 Airborne wind onshore
 Airborne wind shallow water
 Airborne wind floating
 
 We assume
-- that offshore wind and awe shallow water share the same space using a group constraint (however, Hidde assumes shared energy_cap_max, not area!)
-- that offshore floating and awe deep water share the same space (however, Hidde assumes shared energy_cap_max, not area!)
+- that offshore wind and awe shallow water share the same space using a group constraint
+  (however, Hidde assumes shared energy_cap_max, not area!)
+- that offshore floating and awe deep water share the same space
+  (however, Hidde assumes shared energy_cap_max, not area!)
 """
-import sys
-import pandas as pd
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
-from lib.template import parametrise_template
+
+import pandas as pd
 import xarray as xr
+
+from lib.template import parametrise_template
 
 
 def prepare_capacity_factors(capfac, destination, name, rename_columns=None):
@@ -42,10 +44,15 @@ def prepare_capacity_factors(capfac, destination, name, rename_columns=None):
     df_capfac = capfac.to_dataframe()["__xarray_dataarray_variable__"].unstack("id")
 
     if rename_columns is not None:
-        df_capfac = df_capfac.loc[:, rename_columns.keys()]  # drop columns that are not in rename_columns
-        df_capfac = df_capfac.rename(columns=rename_columns, )
+        df_capfac = df_capfac.loc[
+            :, rename_columns.keys()
+        ]  # drop columns that are not in rename_columns
+        df_capfac = df_capfac.rename(
+            columns=rename_columns,
+        )
 
     df_capfac.to_csv(destination / f"{name}.csv")
+
 
 def prepare_areas():
     pass
@@ -64,14 +71,18 @@ if __name__ == "__main__":
         path_output.mkdir(parents=True)
 
     # parametrize template for locations
-    for template, path_potentials in zip(snakemake.input.templates_locations, snakemake.input.potentials):
+    for template, path_potentials in zip(
+        snakemake.input.templates_locations, snakemake.input.potentials
+    ):
         path_target = path_output / Path(template).name
         potentials = pd.read_csv(path_potentials, index_col=0)
         parametrise_template(template, path_target, potentials=potentials)
 
     # parametrize template for techs
-    parametrise_template(snakemake.input.template_techs, path_output / Path(snakemake.input.template_techs).name)
-
+    parametrise_template(
+        snakemake.input.template_techs,
+        path_output / Path(snakemake.input.template_techs).name,
+    )
 
     for path_capacity_factors in snakemake.input.capacity_factors:
         path_capacity_factors = Path(path_capacity_factors)
@@ -82,6 +93,10 @@ if __name__ == "__main__":
             mapping = pd.read_csv(snakemake.input.mapping, index_col=0)
             mapping.index = mapping.index.astype(str)
             mapping = mapping["country_code"].to_dict()
-    
-        prepare_capacity_factors(capacity_factors, destination=path_output / "timeseries", name=path_capacity_factors.stem, rename_columns=mapping)
-    
+
+        prepare_capacity_factors(
+            capacity_factors,
+            destination=path_output / "timeseries",
+            name=path_capacity_factors.stem,
+            rename_columns=mapping,
+        )

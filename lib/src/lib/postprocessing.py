@@ -1,16 +1,24 @@
-import calliope
-import pandas as pd
 from pathlib import Path
+from typing import Union
 
+import calliope
+import numpy as np
+import pandas as pd
 
 here = Path(__file__).parent
-CONVERSION_FACTORS = pd.read_csv(here / "unit_conversion.csv", index_col=0).loc["converion_factor"].to_dict()
+CONVERSION_FACTORS = (
+    pd.read_csv(here / "unit_conversion.csv", index_col=0)
+    .loc["converion_factor"]
+    .to_dict()
+)
 
 
-def get_formatted_data(model: calliope.Model, coefficient: str, conversion_factors=None) -> pd.Series:
+def get_formatted_data(
+    model: calliope.Model, coefficient: str, conversion_factors=None
+) -> pd.Series:
     r"""
     Get input or results data from a calliope model.
-    
+
     Parameters
     ----------
     model : calliope.Model
@@ -19,7 +27,7 @@ def get_formatted_data(model: calliope.Model, coefficient: str, conversion_facto
         The coefficient to get from the model.
     conversion_factors : dict (default: None)
         Dictionary mapping the coefficient to a conversion factor.
-    
+
     Returns
     -------
     data : pd.Series
@@ -28,21 +36,21 @@ def get_formatted_data(model: calliope.Model, coefficient: str, conversion_facto
     if conversion_factors is None:
         conversion_factors = CONVERSION_FACTORS
 
-
-    data = (
-        model.get_formatted_array(coefficient, index_format="multiindex")
-        .to_dataframe()
-    )
+    data = model.get_formatted_array(
+        coefficient, index_format="multiindex"
+    ).to_dataframe()
 
     data *= conversion_factors[coefficient]
 
     return data
 
 
-def aggregate(data: pd.Series or pd.DataFrame, agg_map: dict, axis=0: int) -> pd.Series or pd.DataFrame:
+def aggregate(
+    data: pd.Series or pd.DataFrame, agg_map: dict, axis: int = 0
+) -> Union[pd.Series, pd.DataFrame]:
     r"""
-    Aggregate data 
-    
+    Aggregate data
+
     Parameters
     ----------
     data : pd.Series or pd.DataFrame
@@ -64,20 +72,24 @@ def aggregate(data: pd.Series or pd.DataFrame, agg_map: dict, axis=0: int) -> pd
     return data_agg
 
 
-def filter_index(data: pd.Series or pd.DataFrame, where: str or list[str], level: str) -> pd.Series or pd.DataFrame:
+def filter_index(
+    data: pd.Series or pd.DataFrame, where: str or list[str], level: str
+) -> pd.Series or pd.DataFrame:
     r"""
     Filter DataFrame by index.
     """
     pass
 
 
-def df_drop_nan_inf(data: pd.DataFrame, axis: int, drop_if_any=True: bool) -> pd.DataFrame:
+def df_drop_nan_inf(
+    df: pd.DataFrame, axis: int, drop_if_any: bool = True
+) -> pd.DataFrame:
     r"""
     Drop nan and inf values from a dataframe.
 
     Parameters
     ----------
-    data : pd.DataFrame
+    df : pd.DataFrame
         Dataframe to clean.
     axis : int
         Axis to clean along.

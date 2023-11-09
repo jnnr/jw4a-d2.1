@@ -1,12 +1,12 @@
-from pathlib import Path
 import shutil
-import pytest 
-import sys
-from deepdiff import DeepDiff
-import yaml
-sys.path.append(str(Path(__file__).parent.parent))
-from lib.template import parametrise_template
+from pathlib import Path
+
 import pandas as pd
+import pytest
+import yaml
+from deepdiff import DeepDiff
+
+from lib.template import parametrise_template
 
 EXPECTED_DIR = Path(__file__).parent / "_files"
 TEMP_DIR = Path(__file__).parent / "temp"
@@ -14,7 +14,7 @@ TEMPLATE_DIR = Path(__file__).parent.parent / "data" / "templates"
 
 
 def compare_yaml_files(path_file1, path_file2):
-    with open(path_file1, 'r') as file1, open(path_file2, 'r') as file2:
+    with open(path_file1, "r") as file1, open(path_file2, "r") as file2:
         content1 = yaml.safe_load(file1)
         content2 = yaml.safe_load(file2)
 
@@ -44,9 +44,8 @@ def test_parametrise_templates():
         "potentials-wind-offshore-deep.csv",
         "potentials-wind-offshore-shallow.csv",
     ]
-    
-    for template, file_potentials in zip(templates, files_potentials):
 
+    for template, file_potentials in zip(templates, files_potentials):
         potentials = pd.read_csv(EXPECTED_DIR / file_potentials, index_col=0)
 
         parametrise_template(

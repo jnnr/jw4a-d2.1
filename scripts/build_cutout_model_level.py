@@ -1,5 +1,5 @@
-import xarray as xr
 import numpy as np
+import xarray as xr
 
 
 def _rename_and_clean_coords(ds, add_lon_lat=True):
@@ -22,6 +22,11 @@ def _rename_and_clean_coords(ds, add_lon_lat=True):
 
 
 if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
+
+        snakemake = mock_snakemake("build_cutout_model_level")
+
     modellevel = xr.open_dataset(str(snakemake.input))
 
     modellevel.attrs["module"] = "era5"
@@ -34,9 +39,9 @@ if __name__ == "__main__":
         modellevel[v].attrs["feature"] = v
         modellevel[v].attrs["module"] = "era5-ml"
 
-    modellevel["wind_speed"] = np.sqrt(modellevel["u"] ** 2 + modellevel["v"] ** 2).assign_attrs(
-        units=modellevel["u"].attrs["units"], long_name="Wind speed"
-    )
+    modellevel["wind_speed"] = np.sqrt(
+        modellevel["u"] ** 2 + modellevel["v"] ** 2
+    ).assign_attrs(units=modellevel["u"].attrs["units"], long_name="Wind speed")
 
     modellevel.to_netcdf(str(snakemake.output))
     modellevel.close()

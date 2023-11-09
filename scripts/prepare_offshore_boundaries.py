@@ -14,9 +14,9 @@ Prepare boundaries for offshore regions.
 Based on the eez.
 Can be further segmented by some segmentation approach.
 """
-import geopandas as gpd
 from pathlib import Path
 
+import geopandas as gpd
 
 if __name__ == "__main__":
     if "snakemake" not in globals():

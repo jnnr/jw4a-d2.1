@@ -2,13 +2,13 @@ r"""
 Downloads wind timeseries from ERA5
 """
 import cdsapi
-import pandas as pd
-import os
 
 
 def download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, client):
     print(f"Downloading from ERA5, model level. Saving to {filepath}")
-    print(f"lon_west={lon_west}, lon_east={lon_east}, lat_north={lat_north}, lat_south={lat_south}")
+    print(
+        f"lon_west={lon_west}, lon_east={lon_east}, lat_north={lat_north}, lat_south={lat_south}"
+    )
     client.retrieve(
         "reanalysis-era5-complete",
         {
@@ -17,7 +17,12 @@ def download_ERA5_ml(lon_west, lon_east, lat_north, lat_south, filepath, client)
             "levtype": "ml",
             "param": "131/132",
             "stream": "oper",
-            "time": "00:00:00/01:00:00/02:00:00/03:00:00/04:00:00/05:00:00/06:00:00/07:00:00/08:00:00/09:00:00/10:00:00/11:00:00/12:00:00/13:00:00/14:00:00/15:00:00/16:00:00/17:00:00/18:00:00/19:00:00/20:00:00/21:00:00/22:00:00/23:00:00",
+            "time": (
+                "00:00:00/01:00:00/02:00:00/03:00:00/04:00:00/05:00:00/"
+                "06:00:00/07:00:00/08:00:00/09:00:00/10:00:00/11:00:00/"
+                "12:00:00/13:00:00/14:00:00/15:00:00/16:00:00/17:00:00/"
+                "18:00:00/19:00:00/20:00:00/21:00:00/22:00:00/23:00:00"
+            ),
             "type": "an",
             "area": [lat_north, lon_west, lat_south, lon_east],
             "grid": "0.25/0.25",
@@ -128,8 +133,13 @@ def download_ERA5_pl(lon_west, lon_east, lat_north, lat_south, filepath, client)
 
 
 if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
+
+        snakemake = mock_snakemake("download_ERA5_cutout_modellevel")
+
     target_dir = snakemake.output.target_dir
 
     cdsclient = cdsapi.Client(timeout=600, quiet=False, debug=True)
 
-    download_ERA5_ml(-17., 37., 72., 32., target_dir, cdsclient)
+    download_ERA5_ml(-17.0, 37.0, 72.0, 32.0, target_dir, cdsclient)

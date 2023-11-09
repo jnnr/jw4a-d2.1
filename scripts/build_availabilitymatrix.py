@@ -1,8 +1,9 @@
-import atlite
 import functools
-import numpy as np
-import geopandas as gpd
 from pathlib import Path
+
+import atlite
+import geopandas as gpd
+import numpy as np
 import pandas as pd
 
 
@@ -18,7 +19,11 @@ def compute_shape_availabilities(geometries, excluder):
         area = geometry.geometry.to_crs(excluder.crs).item().area
 
         available_share = availability / area
-        availabilities.loc[id, ["area", "available_area", "available_share"]] = [area, availability, available_share]
+        availabilities.loc[id, ["area", "available_area", "available_share"]] = [
+            area,
+            availability,
+            available_share,
+        ]
 
     return availabilities
 
@@ -56,7 +61,6 @@ if __name__ == "__main__":
     availability.to_netcdf(snakemake.output.availability_deep)
     area_deep = compute_shape_availabilities(boundaries, excluder_deep)
     area_deep.to_csv(snakemake.output.area_deep)
-    
 
     availability = cutout.availabilitymatrix(boundaries, excluder_shallow)
     availability.to_netcdf(snakemake.output.availability_shallow)

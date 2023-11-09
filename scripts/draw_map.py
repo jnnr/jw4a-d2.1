@@ -14,29 +14,36 @@ Plot maps of potentials
 
 Plot potential cost curves
 """
-import xarray as xr
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import rioxarray
+import xarray as xr
 from matplotlib.colors import ListedColormap
 
 
-def map_area_potential(water_depth, boundaries_eez, boundaries_onshore, natura2000, fig=None, ax=None):
+def map_area_potential(
+    water_depth, boundaries_eez, boundaries_onshore, natura2000, fig=None, ax=None
+):
     r"""
     Shows exclusion criteria and regions for onshore and offshore wind, deep and shallow
     """
     if fig is None or ax is None:
         fig, ax = plt.subplots(figsize=(12, 10))
 
-    water_depth = water_depth.coarsen(dim={"lat": 20, "lon": 20}, boundary="trim").mean()
+    water_depth = water_depth.coarsen(
+        dim={"lat": 20, "lon": 20}, boundary="trim"
+    ).mean()
     water_depth = water_depth.rio.write_crs("epsg:4326")
     water_depth = water_depth.rio.clip(boundaries_eez.geometry)
     water_depth = water_depth.drop("spatial_ref")
 
     # create masks for shallow and deep water
     threshold = -60
-    water_shallow = ((water_depth.elevation < 0) & (water_depth.elevation > threshold)).astype(int)
-    water_deep = ((water_depth.elevation < 0) & (water_depth.elevation < threshold)).astype(int)
+    water_shallow = (
+        (water_depth.elevation < 0) & (water_depth.elevation > threshold)
+    ).astype(int)
+    water_deep = (
+        (water_depth.elevation < 0) & (water_depth.elevation < threshold)
+    ).astype(int)
 
     # define colormaps
     colors = [(0, 0, 0, 0), "#1aeaef"]
@@ -47,10 +54,10 @@ def map_area_potential(water_depth, boundaries_eez, boundaries_onshore, natura20
     # TODO: Crete and Kosovo are missing and some region in front of the coast of Normandy
     water_shallow.plot(ax=ax, cmap=cmap1, add_colorbar=False)
     water_deep.plot(ax=ax, cmap=cmap2, add_colorbar=False)
-    boundaries_eez.geometry.boundary.plot(ax=ax, linewidth=0.5, color='#000000')
-    boundaries_onshore.geometry.boundary.plot(ax=ax, linewidth=0.5, color='#100000')
-    boundaries_onshore.geometry.plot(ax=ax, color='#000000', alpha=0.4)
-    natura2000.geometry.to_crs("epsg:4326").plot(ax=ax, color='#369249', alpha=1)
+    boundaries_eez.geometry.boundary.plot(ax=ax, linewidth=0.5, color="#000000")
+    boundaries_onshore.geometry.boundary.plot(ax=ax, linewidth=0.5, color="#100000")
+    boundaries_onshore.geometry.plot(ax=ax, color="#000000", alpha=0.4)
+    natura2000.geometry.to_crs("epsg:4326").plot(ax=ax, color="#369249", alpha=1)
 
     plt.tight_layout()
     ax.set_axis_off()
@@ -69,7 +76,7 @@ def map_wind_speeds(wind_speed_mean, boundaries, vmax=None, fig=None, ax=None):
     wind_speed_mean = wind_speed_mean.rio.write_crs("epsg:4326").drop("spatial_ref")
 
     # plot
-    boundaries.geometry.boundary.plot(ax=ax, linewidth=0.5, color='#000000')
+    boundaries.geometry.boundary.plot(ax=ax, linewidth=0.5, color="#000000")
     wind_speed_mean.plot(cmap="Blues", ax=ax, vmin=0, vmax=vmax)
 
     ax.set_axis_off()
@@ -92,15 +99,29 @@ if __name__ == "__main__":
     water_depth = xr.open_dataset(snakemake.input.water_depth)
 
     wind_speed_era5 = xr.load_dataset(snakemake.input.cutout_era5)
-    wind_speed_era5_model_level = xr.load_dataset(snakemake.input.cutout_era5_model_level)
-    
+    wind_speed_era5_model_level = xr.load_dataset(
+        snakemake.input.cutout_era5_model_level
+    )
+
     map_area_potential(water_depth, boundaries_eez, boundaries_onshore, natura2000)
     plt.savefig(snakemake.output.areas, dpi=300, bbox_inches="tight", transparent=False)
 
     vmax = wind_speed_era5_model_level.wind_speed.mean("time").max()
 
     map_wind_speeds(wind_speed_era5.wnd100m.mean("time"), boundaries_eez, vmax=vmax)
-    plt.savefig(snakemake.output.wind_speeds_era5, dpi=300, bbox_inches="tight", transparent=False)
+    plt.savefig(
+        snakemake.output.wind_speeds_era5,
+        dpi=300,
+        bbox_inches="tight",
+        transparent=False,
+    )
 
-    map_wind_speeds(wind_speed_era5_model_level.wind_speed.mean("time"), boundaries_eez, vmax=vmax)
-    plt.savefig(snakemake.output.wind_speeds_era5_model_level, dpi=300, bbox_inches="tight", transparent=False)
+    map_wind_speeds(
+        wind_speed_era5_model_level.wind_speed.mean("time"), boundaries_eez, vmax=vmax
+    )
+    plt.savefig(
+        snakemake.output.wind_speeds_era5_model_level,
+        dpi=300,
+        bbox_inches="tight",
+        transparent=False,
+    )

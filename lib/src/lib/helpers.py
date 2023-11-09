@@ -38,6 +38,7 @@ def mock_snakemake(rulename, configfiles=[], **wildcards):
         needed.
     """
     import os
+
     import snakemake as sm
     from packaging.version import Version, parse
     from snakemake.script import Snakemake

@@ -1,14 +1,14 @@
 r"""
-Use the prepared cutout of ERA5 model level data to prepare capacity factors for AWE, both onshore and
-offshore.
+Use the prepared cutout of ERA5 model level data to prepare capacity factors for AWE,
+both onshore and offshore.
 """
+from operator import itemgetter
+
 import atlite
-import functools
-import numpy as np
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import xarray as xr
-from operator import itemgetter
 
 
 def convert_wind_awe(ds, turbine):
@@ -17,7 +17,7 @@ def convert_wind_awe(ds, turbine):
     """
     V, POW, hub_height, P = itemgetter("V", "POW", "hub_height", "P")(turbine)
 
-    #wnd_hub = windm.extrapolate_wind_speed(ds, to_height=hub_height)
+    # wnd_hub = windm.extrapolate_wind_speed(ds, to_height=hub_height)
     wnd_hub = ds.wind_speed
 
     def _interpolate(da):
@@ -39,16 +39,29 @@ def convert_wind_awe(ds, turbine):
 
 
 if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from lib.helpers import mock_snakemake
+
+        snakemake = mock_snakemake("prepare_capacity_factors")
+
     cutout = atlite.Cutout(snakemake.input.cutout)
 
     # prepare power curve
     powercurve = pd.read_csv(snakemake.input.powercurve, index_col=0)
-    powercurve = dict(V=np.array(list(powercurve.index)), POW=np.array(list(powercurve["power"])), hub_height=100)
+    powercurve = dict(
+        V=np.array(list(powercurve.index)),
+        POW=np.array(list(powercurve["power"])),
+        hub_height=100,
+    )
     powercurve["P"] = np.max(powercurve["POW"])
 
     # prepare capacity matrix
-    # No need to define area per grid cell and capacity per area as we ask for capacity factors per unit in the end
-    if snakemake.input.get("shapes") is not None and snakemake.input.get("availability") is not None:
+    # No need to define area per grid cell and capacity per area as we ask for
+    # capacity factors per unit in the end
+    if (
+        snakemake.input.get("shapes") is not None
+        and snakemake.input.get("availability") is not None
+    ):
         raise ValueError("Either shapes or availability must be defined, not both.")
 
     elif snakemake.input.get("shapes") is not None:
@@ -69,7 +82,7 @@ if __name__ == "__main__":
         per_unit=True,
         matrix=capacity_matrix,
         shapes=shapes,
-        index=index
+        index=index,
     )
 
     capfac_wind_awe.to_netcdf(str(snakemake.output))

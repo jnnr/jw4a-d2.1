@@ -15,10 +15,14 @@ def parametrise_template(path_to_template, path_to_output_yaml, **kwargs):
     path_to_template = Path(path_to_template)
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(path_to_template.parent),
-        lstrip_blocks=True, trim_blocks=True, keep_trailing_newline=True,
-        undefined=jinja2.StrictUndefined  # This ensures that missing pandas index elements raise an exception instead of silently returning None
+        lstrip_blocks=True,
+        trim_blocks=True,
+        keep_trailing_newline=True,
+        # The following ensures that missing pandas index elements
+        # raise an exception instead of silently returning None
+        undefined=jinja2.StrictUndefined,
     )
-    env.filters['unit'] = filters.unit
+    env.filters["unit"] = filters.unit
     rendered = env.get_template(path_to_template.name).render(**kwargs)
 
     with open(path_to_output_yaml, "w") as result_file:
@@ -32,6 +36,8 @@ def _update_kwargs(**kwargs):
         )
     for config_key in ["locations", "links"]:  # we cannot allow keys with "." in them
         if config_key in kwargs.keys():
-            kwargs[config_key] = kwargs[config_key].rename(index=lambda x: x.replace(".", "-"))
+            kwargs[config_key] = kwargs[config_key].rename(
+                index=lambda x: x.replace(".", "-")
+            )
 
     return kwargs
