@@ -46,6 +46,20 @@ rule prepare_old_capacity_factors_for_plot:
         tech = "wind-offshore|wind-onshore"
     script: "../scripts/prepare_old_capacity_factors_for_plot.py"
 
+rule plot_capacity_factor_distribution:
+    input:
+        # offshore_deep_awe="build/capacity_factors/capacity_factors_offshore_deep_awe.nc",
+        # offshore_shallow_awe="build/capacity_factors/capacity_factors_offshore_shallow_awe.nc",
+        old_wind_offshore="build/capacity_factors/capacity_factors_old_wind-offshore.nc",
+        old_wind_onshore="build/capacity_factors/capacity_factors_old_wind-onshore.nc",
+        # onshore_awe="build/capacity_factors/capacity_factors_onshore_awe.nc",
+    output:
+        histogram="build/plots/capacity_factors_histogram.png",
+        regional_histogram="build/plots/capacity_factors_regional_histogram.png",
+        boxplot="build/plots/capacity_factors_boxplot.png",
+        regional_boxplot="build/plots/capacity_factors_regional_boxplot.png"
+    script: "../scripts/plot_capacity_factor_distribution.py"
+
 rule postprocess_model_results:
     conda: "../envs/calliope.yaml"
     input: ancient("run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/{year}_{resolution}_{model_resolution}_{scenario}.nc")
