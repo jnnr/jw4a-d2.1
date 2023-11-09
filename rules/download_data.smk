@@ -29,10 +29,10 @@ rule download_eez:
     # conda: "../envs/shell.yaml"
     shell: "curl -sLo {output} '{params.url}'"
 
-rule download_ERA5_cutout:
+rule download_ERA5_cutout_modellevel:
     output: 
         target_dir="build/cutouts/cutout-era5-model-level.nc"
-    script: "../scripts/download_weatherdata_ERA5.py"
+    script: "../scripts/download_cutout_era5_model_level.py"
 
 rule download_ERA5_cutout_conventional:
     output:

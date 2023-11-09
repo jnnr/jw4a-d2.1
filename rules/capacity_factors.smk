@@ -1,7 +1,7 @@
 rule build_cutout_model_level:
     input: "build/cutouts/cutout-era5-model-level.nc"
     output: "build/cutouts/cutout-era5-model-level_adapted.nc"
-    script: "../scripts/build_cutout_ml.py"
+    script: "../scripts/build_cutout_model_level.py"
 
 rule build_availabilitymatrix:
     input:
