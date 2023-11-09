@@ -1,5 +1,3 @@
 [flake8]
-max-line-length = 119
-ignore = E261
-exclude = Snakefile, *.smk
-builtins = snakemake # for using the snakemake injection in scripts
+exclude = meta/migrations/, docs/
+max-line-length=100

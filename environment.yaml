@@ -6,7 +6,9 @@ dependencies:
     - python=3.11
     - flake8=3.8.3
     - snakemake-minimal=7.19.1
+    - pre-commit
     - black
+    - flake8
     - geopandas
     - cdsapi
     - pandas
