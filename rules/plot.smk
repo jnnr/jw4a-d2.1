@@ -56,8 +56,9 @@ rule plot_capacity_factor_distribution:
     output:
         histogram="build/plots/capacity_factors_histogram.png",
         regional_histogram="build/plots/capacity_factors_regional_histogram.png",
-        boxplot="build/plots/capacity_factors_boxplot.png",
-        regional_boxplot="build/plots/capacity_factors_regional_boxplot.png"
+        # boxplot="build/plots/capacity_factors_boxplot.png",
+        regional_boxplot="build/plots/capacity_factors_regional_boxplot.png",
+        description="build/plots/capacity_factors_description.csv"
     script: "../scripts/plot_capacity_factor_distribution.py"
 
 rule postprocess_model_results:

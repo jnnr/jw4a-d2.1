@@ -7,10 +7,13 @@ def read_multiple_ncfiles(paths: dict) -> pd.DataFrame:
     capacity_factors = {}
     for name, path_capacity_factors in paths.items():
         ds = xr.load_dataset(path_capacity_factors)
+        ds = ds.rename({"id": "region"})
         ds = ds.rename({"__xarray_dataarray_variable__": name})
         capacity_factors[name] = ds.to_dataframe()
 
     capacity_factors = pd.concat(capacity_factors.values(), axis=1)
+
+    capacity_factors.columns.name = "techs"
 
     return capacity_factors
 
@@ -32,7 +35,7 @@ def plot_boxplot(df: pd.DataFrame, facets: str = None) -> pn.ggplot:
         The boxplot
     """
     boxplot = (
-        pn.ggplot(df, pn.aes(x="variable", y="value"))
+        pn.ggplot(df, pn.aes(x="techs", y="value"))
         + pn.geom_boxplot()
         + pn.facet_wrap(facets=facets)
         + pn.labs(x="Technology", y="Annual capacity factor")
@@ -110,6 +113,33 @@ def df_drop_all_small(
         raise ValueError("axis must be 0 or 1")
 
 
+def description(
+    df: pd.DataFrame, aggregate: pd.Index, group: pd.Index, values: pd.Index
+) -> pd.DataFrame:
+    """
+    Compute summary statistics of a tidy dataframe
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data to summarize
+    aggregate : pd.Index
+        Column to aggregate by
+    group : pd.Index
+        Columns to group by
+    values : pd.Index
+        Columns to summarize
+
+    Returns
+    -------
+    pd.DataFrame
+        Summary statistics of the data
+    """
+    _df = pd.pivot_table(df, index=aggregate, columns=group, values=values)
+    description = _df.describe().T
+    return description
+
+
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from lib.helpers import mock_snakemake
@@ -121,19 +151,19 @@ if __name__ == "__main__":
 
     # Prepare data
     def drop_all_small_timeseries(df):
-        df = df.unstack("id")
+        df = df.unstack("region")
         df = df_drop_all_small(df, axis=0, eps=1e-3)
-        df = df.stack("id")
+        df = df.stack("region")
 
         return df
 
     capacity_factors = drop_all_small_timeseries(capacity_factors)
 
-    capacity_factors = capacity_factors.reset_index().melt(id_vars=["time", "id"])
+    capacity_factors = capacity_factors.reset_index().melt(id_vars=["time", "region"])
 
     # Plot
     histogram = plot_histogram(
-        capacity_factors, x="value", facet="variable", nrow=1, ncol=5, bins=30
+        capacity_factors, x="value", facets="techs", nrow=1, ncol=5, bins=30
     )
     histogram.save(
         snakemake.output.histogram,
@@ -147,9 +177,9 @@ if __name__ == "__main__":
     histogram = plot_histogram(
         capacity_factors,
         x="value",
-        facets=("id", "variable"),
-        nrow=len(capacity_factors.id.unique()),
-        ncol=len(capacity_factors.variable.unique()),
+        facets=("region", "techs"),
+        nrow=len(capacity_factors.region.unique()),
+        ncol=len(capacity_factors.techs.unique()),
         bins=30,
     )
     histogram.save(
@@ -161,7 +191,7 @@ if __name__ == "__main__":
         transparent=False,
     )
 
-    boxplot = plot_boxplot(capacity_factors, facets="id")
+    boxplot = plot_boxplot(capacity_factors, facets="region")
     boxplot.save(
         snakemake.output.regional_boxplot,
         dpi=300,
@@ -170,3 +200,9 @@ if __name__ == "__main__":
         facecolor="w",
         transparent=False,
     )
+
+    description = description(
+        capacity_factors, aggregate="time", group=["region", "techs"], values="value"
+    )
+    description = description.round(3)
+    description.to_csv(snakemake.output.description)
