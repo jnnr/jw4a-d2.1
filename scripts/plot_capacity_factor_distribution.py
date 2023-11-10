@@ -104,7 +104,7 @@ def df_drop_all_small(
     pd.DataFrame
         Cleaned dataframe.
     """
-    condition = ~(abs(df) < eps).all(axis)
+    condition = ~df.apply(lambda x: (abs(x.dropna()) < eps).all(), axis=0)
     if axis == 1:
         return df.loc[condition, :]
     elif axis == 0:
@@ -161,6 +161,8 @@ if __name__ == "__main__":
 
     capacity_factors = capacity_factors.reset_index().melt(id_vars=["time", "region"])
 
+    capacity_factors = capacity_factors.loc[~capacity_factors.value.isna()]
+
     # Plot
     histogram = plot_histogram(
         capacity_factors, x="value", facets="techs", nrow=1, ncol=5, bins=30
@@ -190,6 +192,16 @@ if __name__ == "__main__":
         facecolor="w",
         transparent=False,
     )
+
+    # boxplot = plot_boxplot(capacity_factors)
+    # boxplot.save(
+    #     snakemake.output.boxplot,
+    #     dpi=300,
+    #     height=20,
+    #     width=20,
+    #     facecolor="w",
+    #     transparent=False,
+    # )
 
     boxplot = plot_boxplot(capacity_factors, facets="region")
     boxplot.save(

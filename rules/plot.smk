@@ -48,11 +48,11 @@ rule prepare_old_capacity_factors_for_plot:
 
 rule plot_capacity_factor_distribution:
     input:
-        # offshore_deep_awe="build/capacity_factors/capacity_factors_offshore_deep_awe.nc",
-        # offshore_shallow_awe="build/capacity_factors/capacity_factors_offshore_shallow_awe.nc",
+        offshore_deep_awe="build/capacity_factors/capacity_factors_offshore_deep_awe.nc",
+        offshore_shallow_awe="build/capacity_factors/capacity_factors_offshore_shallow_awe.nc",
         old_wind_offshore="build/capacity_factors/capacity_factors_old_wind-offshore.nc",
         old_wind_onshore="build/capacity_factors/capacity_factors_old_wind-onshore.nc",
-        # onshore_awe="build/capacity_factors/capacity_factors_onshore_awe.nc",
+        onshore_awe="build/capacity_factors/capacity_factors_onshore_awe.nc",
     output:
         histogram="build/plots/capacity_factors_histogram.png",
         regional_histogram="build/plots/capacity_factors_regional_histogram.png",
