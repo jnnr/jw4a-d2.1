@@ -1,0 +1,6 @@
+overrides:
+    novel_wind:
+        locations:
+            {% for id, potential in potentials.iterrows() %}
+            {{ id }}.techs.awe_onshore_sw:
+            {% endfor %}
