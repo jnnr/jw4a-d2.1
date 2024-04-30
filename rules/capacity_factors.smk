@@ -6,9 +6,9 @@ rule build_cutout_model_level:
 rule build_availabilitymatrix:
     input:
         boundaries = "build/shapes/eez.geojson",
-        cutout = "build/cutouts/cutout-era5-model-level_adapted_copy.nc",
+        cutout = "build/cutouts/cutout-era5-model-level.nc",
         natura2000 = "data/potentials_offshore/natura2000_areas/eea_v_3035_100_k_natura2000_p_2021_v12_r01/SHP/Natura2000_end2021_rev1_epsg3035.shp",
-        shipdensity = "data/potentials_offshore/shipping_density_global/shipdensity_global.tif",
+        shipdensity = "data/potentials_offshore/shipdensity_global/shipdensity_global.tif",
         gebco = "data/potentials_offshore/gebco_2023_sub_ice_topo/GEBCO_2023_sub_ice_topo.nc"
     output:
         availability_deep = "build/availability/availability_offshore_deep.nc",

@@ -14,10 +14,17 @@ rule download_geodata_offshore:
         download(params.natura2000_areas, output.natura2000_areas)
 
 rule unzip_geodata_offshore:
-    input: [item for item in rules.download_geodata_offshore.output if item.endswith(".zip")]
-    output: [directory(os.path.splitext(item)[0]) for item in rules.download_geodata_offshore.output if item.endswith(".zip")] 
+    input:
+        water_depth="data/potentials_offshore/gebco_2023_sub_ice_topo.zip",
+        shipping_density_global="data/potentials_offshore/shipdensity_global.zip",
+        natura2000_areas="data/potentials_offshore/natura2000_areas.zip"
+    output:
+        water_depth="data/potentials_offshore/gebco_2023_sub_ice_topo/GEBCO_2023_sub_ice_topo.nc",
+        shipping_density_global="data/potentials_offshore/shipdensity_global/shipdensity_global.tif",
+        natura2000_areas="data/potentials_offshore/natura2000_areas/eea_v_3035_100_k_natura2000_p_2021_v12_r01/SHP/Natura2000_end2021_rev1_epsg3035.shp"
     run:
-        for zipped, unzipped in zip(*{input}, *{output}):
+        for zipped in input:
+            unzipped = os.path.splitext(zipped)[0]
             print(f"Unzipping {zipped} to {unzipped}")
             unzip(str(zipped), str(unzipped))
 

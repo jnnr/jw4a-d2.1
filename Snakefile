@@ -39,11 +39,19 @@ onerror:
 rule all:
     message: "Run entire analysis and compile report."
     input:
-        rules.draw_map.output[0],
-        # rules.draw_plots_capacityfactors.output[0],  # TODO contains wildcards. What to do?
+        rules.unzip_geodata_offshore.output,
+        rules.map_eez_to_eurospores.output,
+        rules.build_availabilitymatrix.output,
+        expand(rules.prepare_capacity_factors.output, tech=config["prepare_capacity_factors"].keys()),
+        # TODO Potentials onshore?
+        rules.draw_map.output,
+        expand(rules.draw_plots_capacityfactors.output[0], tech=config["prepare_capacity_factors"].keys()),
         rules.table_area_potential_offshore.output[0],
         rules.assemble_prebuild.output[0],
+        expand(rules.plot_model_results.output, year="2016", resolution="eurospores", model_resolution="res_3h", scenario="noveltech"),
         expand("run-prebuilt-sector-coupled-euro-calliope/build/eurospores/outputs/{year}_{model_resolution}.nc", year="2016", model_resolution="res_3h")
+        rules.draw_boxplot_capacityfactors.output,
+        rules.plot_capacity_factor_distribution.output,
 
 rule dag:
      message: "Plot dependency graph of the workflow."

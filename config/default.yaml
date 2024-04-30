@@ -66,25 +66,25 @@ scope:
 prepare_capacity_factors:
     onshore_awe:
         shapes: "data/europe-98-zones.geojson/europe-98-zones.geojson"
-        cutout: "build/cutouts/cutout-era5-model-level_adapted_copy.nc"
+        cutout: "build/cutouts/cutout-era5-model-level.nc"
         powercurve: "data/power_curves/AWE_500kw_softwing.csv"
 
     offshore_deep_awe:
         availability: "build/availability/availability_offshore_deep.nc"
-        cutout: "build/cutouts/cutout-era5-model-level_adapted_copy.nc"
+        cutout: "build/cutouts/cutout-era5-model-level.nc"
         powercurve: "data/power_curves/AWE_fixedwing1.csv"
 
     offshore_shallow_awe:
         availability: "build/availability/availability_offshore_shallow.nc"
-        cutout: "build/cutouts/cutout-era5-model-level_adapted_copy.nc"
+        cutout: "build/cutouts/cutout-era5-model-level.nc"
         powercurve: "data/power_curves/AWE_fixedwing1.csv"
 
-    offshore_deep_hawt:
-        availability: "build/availability/availability_offshore_deep.nc"
-        cutout: ""  # TODO chose hawt cutout 
-        powercurve: ""  # TODO Change to HAWT
-        # offshore: 87 # m, median hub height of SWT-3.6-107 in Europe between 2010 and 2018
-        # offshore: "siemens swt 3.6 107" # most built between 2010 and 2018 in Europe
+    # offshore_deep_hawt:
+    #     availability: "build/availability/availability_offshore_deep.nc"
+    #     cutout: ""  # TODO chose hawt cutout 
+    #     powercurve: ""  # TODO Change to HAWT
+    #     # offshore: 87 # m, median hub height of SWT-3.6-107 in Europe between 2010 and 2018
+    #     # offshore: "siemens swt 3.6 107" # most built between 2010 and 2018 in Europe
 
 
 draw_plots_capacityfactors:
