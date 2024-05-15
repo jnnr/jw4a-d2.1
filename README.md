@@ -1,6 +1,6 @@
 # JW4A-D2.1
 
-Workflow to run sector-coupled-eurocalliope with new wind regions and techs.
+Workflow to run Sector-coupled Euro-Calliope with new wind regions and techs.
 
 The philosophy behind this repository is that no intermediary results are included, but all results are computed from raw data and code.
 
