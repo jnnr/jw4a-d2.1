@@ -1,5 +1,7 @@
 # JW4A-D2.1
 
+[![DOI](https://zenodo.org/badge/677423042.svg)](https://zenodo.org/doi/10.5281/zenodo.11656623)
+
 Workflow to run Sector-coupled Euro-Calliope with new wind regions and techs.
 
 The philosophy behind this repository is that no intermediary results are included, but all results are computed from raw data and code.
